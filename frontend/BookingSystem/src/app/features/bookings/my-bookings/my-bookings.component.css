@@ -1,0 +1,45 @@
+.header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 1.2rem;
+    margin-bottom: 1.1rem;
+}
+
+h2 {
+    margin: 0;
+}
+
+.subtitle {
+    margin: 0.3rem 0 0;
+    color: var(--muted);
+}
+
+.list {
+    display: grid;
+    gap: 1.05rem;
+}
+
+.booking-card {
+    padding: 1rem;
+    display: grid;
+    gap: 0.4rem;
+    transition: transform 170ms ease, box-shadow 170ms ease;
+}
+
+.booking-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 24px rgba(22, 32, 49, 0.12);
+}
+
+.cancel-btn {
+    width: fit-content;
+    margin-top: 0.25rem;
+}
+
+@media (max-width: 720px) {
+    .header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,32 @@
+<section class="container login-wrap">
+    <div class="card login-card">
+        <h2>Welcome back</h2>
+        <p class="subtitle">Sign in to view and manage your bookings.</p>
+
+        @if (error) {
+        <div class="alert alert-error">{{ error }}</div>
+        }
+
+        <form class="form" (ngSubmit)="login()">
+            <label class="field">
+                Email
+                <input class="input" name="email" type="email" [(ngModel)]="email" required />
+            </label>
+            @if (emailInvalid) {
+            <p class="field-error">Enter a valid email address.</p>
+            }
+
+            <label class="field">
+                Password
+                <input class="input" name="password" type="password" [(ngModel)]="password" required />
+            </label>
+            @if (passwordInvalid) {
+            <p class="field-error">Password must be at least 6 characters.</p>
+            }
+
+            <button class="btn btn-primary" type="submit" [disabled]="loading">
+                {{ loading ? 'Signing in...' : 'Login' }}
+            </button>
+        </form>
+    </div>
+</section>

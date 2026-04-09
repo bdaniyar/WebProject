@@ -1,0 +1,48 @@
+<section class="container">
+    <div class="header">
+        <div>
+            <h1>Find your next stay</h1>
+            <p class="subtitle">Browse top hotels with comfortable rooms and fast booking.</p>
+        </div>
+        <button class="btn btn-secondary" type="button" (click)="loadHotels()" [disabled]="loading">
+            {{ loading ? 'Refreshing...' : 'Refresh' }}
+        </button>
+    </div>
+
+    @if (error) {
+    <div class="alert alert-error">{{ error }}</div>
+    }
+
+    <div class="filters card">
+        <div class="filter-group">
+            <label for="location">Location</label>
+            <select id="location" class="input" name="location" [(ngModel)]="selectedLocation" (ngModelChange)="applyFilters()">
+                <option value="">All locations</option>
+                @for (location of locations; track location) {
+                <option [value]="location">{{ location }}</option>
+                }
+            </select>
+        </div>
+
+        <button class="btn btn-secondary reset-btn" type="button" (click)="resetFilters()">Clear</button>
+    </div>
+
+    @if (loading) {
+    <p class="loading">Loading hotels...</p>
+    } @else {
+    <div class="grid">
+        @for (hotel of filteredHotels; track hotel.id) {
+        <article class="card hotel-card">
+            <h3>{{ hotel.name }}</h3>
+            <p class="muted">{{ hotel.location }}</p>
+            <p class="description">{{ hotel.description }}</p>
+            <a class="btn btn-primary details-btn" [routerLink]="['/hotels', hotel.id]">View Details</a>
+        </article>
+        }
+
+        @if (!filteredHotels.length && !error) {
+        <p class="empty-state">No hotels found with these filters.</p>
+        }
+    </div>
+    }
+</section>

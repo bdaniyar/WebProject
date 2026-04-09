@@ -1,0 +1,29 @@
+<div class="booking">
+    <div class="row">
+        <label class="field">
+            Start date
+            <input class="input" name="start" type="date" [min]="today" [(ngModel)]="startDate" />
+        </label>
+
+        <label class="field">
+            End date
+            <input class="input" name="end" type="date" [min]="startDate || today" [(ngModel)]="endDate" />
+        </label>
+    </div>
+
+    @if (invalidRange) {
+    <div class="alert alert-error">Please select a valid date range.</div>
+    }
+
+    <button class="btn btn-primary" type="button" (click)="bookRoom()" [disabled]="loading || invalidRange">
+        {{ loading ? 'Booking...' : 'Book' }}
+    </button>
+
+    @if (message) {
+    <div class="alert alert-success">{{ message }}</div>
+    }
+
+    @if (error) {
+    <div class="alert alert-error">{{ error }}</div>
+    }
+</div>

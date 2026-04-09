@@ -1,0 +1,45 @@
+.back {
+    display: inline-block;
+    margin-bottom: 1.1rem;
+    text-decoration: none;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.hotel-card {
+    padding: 1rem;
+    margin-bottom: 1.15rem;
+}
+
+h2 {
+    margin: 0 0 0.45rem;
+}
+
+.description {
+    margin: 0.45rem 0 0;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.05rem;
+}
+
+.room-card {
+    padding: 1rem;
+    transition: transform 170ms ease, box-shadow 170ms ease;
+}
+
+.room-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 24px rgba(22, 32, 49, 0.12);
+}
+
+.muted {
+    color: var(--muted);
+    margin: 0;
+}
+
+.rooms-title {
+    margin: 0 0 0.8rem;
+}

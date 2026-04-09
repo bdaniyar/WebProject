@@ -1,0 +1,37 @@
+<section class="container">
+    <div class="header">
+        <div>
+            <h2>My bookings</h2>
+            <p class="subtitle">Manage your upcoming reservations in one place.</p>
+        </div>
+        <button class="btn btn-secondary" type="button" (click)="loadMyBookings()" [disabled]="loading">
+            {{ loading ? 'Refreshing...' : 'Refresh' }}
+        </button>
+    </div>
+
+    @if (error) {
+    <div class="alert alert-error">{{ error }}</div>
+    }
+
+    @if (loading) {
+    <p class="loading">Loading your bookings...</p>
+    } @else {
+    <div class="list">
+        @for (b of bookings; track b.id) {
+        <article class="card booking-card">
+            <div><strong>Room:</strong> {{ b.room }}</div>
+            <div><strong>Start:</strong> {{ b.start_date }}</div>
+            <div><strong>End:</strong> {{ b.end_date }}</div>
+            <button class="btn btn-danger cancel-btn" type="button" (click)="cancelBooking(b.id)"
+                [disabled]="cancellingId === b.id">
+                {{ cancellingId === b.id ? 'Cancelling...' : 'Cancel booking' }}
+            </button>
+        </article>
+        }
+
+        @if (!bookings.length) {
+        <p class="empty-state">No bookings yet.</p>
+        }
+    </div>
+    }
+</section>

@@ -1,0 +1,80 @@
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid var(--border);
+    background: #fff;
+    backdrop-filter: blur(8px);
+}
+
+.nav-inner {
+    min-height: 66px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--text);
+}
+
+.brand-mark {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    display: inline-grid;
+    place-items: center;
+    background: #e8efff;
+    color: var(--primary);
+    font-size: 0.82rem;
+}
+
+.links {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.links a {
+    padding: 0.45rem 0.72rem;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #2e3a4f;
+    font-weight: 600;
+    transition: 160ms ease;
+}
+
+.links a:hover {
+    background: #f0f4ff;
+}
+
+.links a.active {
+    color: var(--primary);
+    background: #ebf1ff;
+}
+
+@media (max-width: 720px) {
+    .nav-inner {
+        min-height: 58px;
+    }
+
+    .brand span:last-child {
+        display: none;
+    }
+
+    .links {
+        gap: 0.2rem;
+    }
+
+    .links a,
+    .links :is(button) {
+        font-size: 0.87rem;
+        padding: 0.42rem 0.58rem;
+    }
+}

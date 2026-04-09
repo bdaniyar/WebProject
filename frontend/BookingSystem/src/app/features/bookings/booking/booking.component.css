@@ -1,0 +1,34 @@
+.booking {
+    margin-top: 0.9rem;
+    padding-top: 0.85rem;
+    border-top: 1px dashed #d4dded;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+}
+
+.field {
+    display: grid;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.btn {
+    margin-top: 0.75rem;
+}
+
+.alert {
+    margin-top: 0.6rem;
+    margin-bottom: 0;
+}
+
+@media (max-width: 560px) {
+    .row {
+        grid-template-columns: 1fr;
+    }
+}

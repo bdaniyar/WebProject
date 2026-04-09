@@ -1,0 +1,39 @@
+<section class="container">
+    <a class="back" routerLink="/hotels">← Back to hotels</a>
+
+    @if (error) {
+    <div class="alert alert-error">{{ error }}</div>
+    }
+
+    @if (loading) {
+    <p class="loading">Loading hotel details...</p>
+    } @else {
+    @if (hotel) {
+    <div class="card hotel-card">
+        <h2>{{ hotel.name }}</h2>
+        <p class="muted">{{ hotel.location }}</p>
+        <p class="description">{{ hotel.description }}</p>
+    </div>
+
+    <h3 class="rooms-title">Available rooms</h3>
+    <div class="grid">
+        @for (room of rooms; track room.id) {
+        <article class="card room-card">
+            <div class="room-content">
+                <div>
+                    <div><strong>Price:</strong> ${{ room.price }} / night</div>
+                    <div><strong>Capacity:</strong> {{ room.capacity }} guests</div>
+                </div>
+            </div>
+
+            <app-booking [roomId]="room.id" />
+        </article>
+        }
+
+        @if (!rooms.length) {
+        <p class="empty-state">No rooms currently available for this hotel.</p>
+        }
+    </div>
+    }
+    }
+</section>
