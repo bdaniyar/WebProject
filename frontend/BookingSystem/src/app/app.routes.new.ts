@@ -8,10 +8,10 @@ import { HotelListComponent } from './features/hotels/hotel-list/hotel-list.comp
 import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'hotels' },
-  { path: 'login', component: LoginComponent },
-  { path: 'hotels', component: HotelListComponent },
-  { path: 'hotels/:id', component: HotelDetailComponent },
-  { path: 'bookings', component: MyBookingsComponent, canActivate: [authGuard] },
-  { path: '**', component: NotFoundComponent },
+    { path: '', pathMatch: 'full', redirectTo: 'hotels' },
+    { path: 'login', component: LoginComponent },
+    { path: 'hotels', component: HotelListComponent },
+    { path: 'hotels/:id', component: HotelDetailComponent },
+    { path: 'bookings', component: MyBookingsComponent, canActivate: [authGuard] },
+    { path: '**', component: NotFoundComponent },
 ];
