@@ -44,5 +44,5 @@
 <ul>
     <li>Yerkinbek Oren</li>
     <li>Boranov Daniyar</li>
-    <li> Aseke</li>
+    <li> Assan Serikbay</li>
 </ul>
