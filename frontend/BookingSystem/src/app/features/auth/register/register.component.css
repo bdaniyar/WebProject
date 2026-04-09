@@ -1,11 +1,11 @@
-.login-wrap {
+.register-wrap {
     min-height: calc(100vh - 220px);
     display: grid;
     place-items: center;
 }
 
-.login-card {
-    width: min(430px, 100%);
+.register-card {
+    width: min(460px, 100%);
     padding: 1.15rem;
 }
 

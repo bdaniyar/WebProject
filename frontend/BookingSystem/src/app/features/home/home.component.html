@@ -1,0 +1,59 @@
+<section class="hero">
+    <div class="container hero-content">
+        <h1>Find Your Perfect Stay</h1>
+        <p class="hero-subtitle">
+            Explore hand-picked hotels for work, holidays, and quick weekend escapes.
+        </p>
+
+        <form class="search-card card" (ngSubmit)="exploreHotels()">
+            <label class="field">
+                Location
+                <input class="input" type="text" name="location" [(ngModel)]="location" placeholder="Where are you going?" />
+            </label>
+            <label class="field">
+                Check-in
+                <input class="input" type="date" name="checkIn" [(ngModel)]="checkIn" />
+            </label>
+            <label class="field">
+                Check-out
+                <input class="input" type="date" name="checkOut" [(ngModel)]="checkOut" />
+            </label>
+            <button class="btn btn-primary search-btn" type="submit">Explore Hotels</button>
+        </form>
+    </div>
+</section>
+
+<section class="container block">
+    <div class="section-header">
+        <h2>Featured hotels</h2>
+        <a routerLink="/hotels" class="view-all">See all</a>
+    </div>
+
+    <div class="hotel-grid">
+        @for (hotel of featuredHotels; track hotel.id) {
+        <article class="card hotel-card">
+            <p class="tag">{{ hotel.tag }}</p>
+            <h3>{{ hotel.name }}</h3>
+            <p class="muted">{{ hotel.location }}</p>
+            <p class="hotel-description">{{ hotel.description }}</p>
+            <div class="hotel-footer">
+                <strong>${{ hotel.price }}</strong>
+                <a class="btn btn-secondary" [routerLink]="['/hotels', hotel.id]">View</a>
+            </div>
+        </article>
+        }
+    </div>
+</section>
+
+<section class="container block">
+    <h2>Why Choose Us</h2>
+    <div class="feature-grid">
+        @for (feature of features; track feature.title) {
+        <article class="card feature-card">
+            <span class="icon">{{ feature.icon }}</span>
+            <h3>{{ feature.title }}</h3>
+            <p>{{ feature.text }}</p>
+        </article>
+        }
+    </div>
+</section>

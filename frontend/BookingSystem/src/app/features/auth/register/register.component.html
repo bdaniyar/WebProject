@@ -1,13 +1,21 @@
-<section class="container login-wrap">
-    <div class="card login-card">
-        <h2>Welcome back</h2>
-        <p class="subtitle">Sign in to view and manage your bookings.</p>
+<section class="container register-wrap">
+    <div class="card register-card">
+        <h2>Create your account</h2>
+        <p class="subtitle">Join now and start booking your next getaway.</p>
 
         @if (error) {
         <div class="alert alert-error">{{ error }}</div>
         }
 
-        <form class="form" (ngSubmit)="login()">
+        <form class="form" (ngSubmit)="register()">
+            <label class="field">
+                Name
+                <input class="input" name="name" type="text" [(ngModel)]="name" required />
+            </label>
+            @if (nameInvalid) {
+            <p class="field-error">Name must be at least 2 characters.</p>
+            }
+
             <label class="field">
                 Email
                 <input class="input" name="email" type="email" [(ngModel)]="email" required />
@@ -25,13 +33,13 @@
             }
 
             <button class="btn btn-primary" type="submit" [disabled]="loading">
-                {{ loading ? 'Signing in...' : 'Login' }}
+                {{ loading ? 'Creating account...' : 'Register' }}
             </button>
         </form>
 
         <p class="switch-link">
-            Don't have an account?
-            <a routerLink="/register">Register</a>
+            Already have an account?
+            <a routerLink="/login">Login</a>
         </p>
     </div>
 </section>
