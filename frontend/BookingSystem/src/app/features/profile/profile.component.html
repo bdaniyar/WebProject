@@ -1,0 +1,81 @@
+<section class="container profile-wrap">
+    <div class="header">
+        <div class="avatar">{{ initials }}</div>
+        <div>
+            <h1>Profile & Settings</h1>
+            <p class="subtitle">Manage your account info and security settings.</p>
+        </div>
+    </div>
+
+    @if (error) {
+    <div class="alert alert-error">{{ error }}</div>
+    }
+
+    @if (loading) {
+    <p class="loading">Loading profile...</p>
+    } @else {
+    <div class="grid">
+        <article class="card section-card">
+            <h2>Account Info</h2>
+            <form class="form" (ngSubmit)="saveProfile()">
+                <label class="field">
+                    Name
+                    <input class="input" type="text" name="name" [(ngModel)]="name" required />
+                </label>
+                @if (nameInvalid) {
+                <p class="field-error">Name must be at least 2 characters.</p>
+                }
+
+                <label class="field">
+                    Email
+                    <input class="input" type="email" name="email" [(ngModel)]="email" required />
+                </label>
+                @if (emailInvalid) {
+                <p class="field-error">Enter a valid email address.</p>
+                }
+
+                <button class="btn btn-primary" type="submit" [disabled]="savingAccount">
+                    {{ savingAccount ? 'Saving...' : 'Save Changes' }}
+                </button>
+
+                @if (accountMessage) {
+                <div class="alert alert-success">{{ accountMessage }}</div>
+                }
+            </form>
+        </article>
+
+        <article class="card section-card">
+            <h2>Security</h2>
+            <form class="form" (ngSubmit)="savePassword()">
+                <label class="field">
+                    Current password
+                    <input class="input" type="password" name="currentPassword" [(ngModel)]="currentPassword" required />
+                </label>
+                @if (currentPasswordInvalid) {
+                <p class="field-error">Current password is required.</p>
+                }
+
+                <label class="field">
+                    New password
+                    <input class="input" type="password" name="newPassword" [(ngModel)]="newPassword" required />
+                </label>
+                @if (newPasswordInvalid) {
+                <p class="field-error">New password must be at least 6 characters.</p>
+                }
+
+                <button class="btn btn-secondary" type="submit" [disabled]="changingPassword">
+                    {{ changingPassword ? 'Updating...' : 'Change Password' }}
+                </button>
+
+                @if (securityMessage) {
+                <div class="alert alert-success">{{ securityMessage }}</div>
+                }
+
+                @if (securityError) {
+                <div class="alert alert-error">{{ securityError }}</div>
+                }
+            </form>
+        </article>
+    </div>
+    }
+</section>

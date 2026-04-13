@@ -7,6 +7,7 @@ import { MyBookingsComponent } from './features/bookings/my-bookings/my-bookings
 import { HomeComponent } from './features/home/home.component';
 import { HotelDetailComponent } from './features/hotels/hotel-detail/hotel-detail.component';
 import { HotelListComponent } from './features/hotels/hotel-list/hotel-list.component';
+import { ProfileComponent } from './features/profile/profile.component';
 import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 
 export const routes: Routes = [
@@ -16,5 +17,6 @@ export const routes: Routes = [
   { path: 'hotels', component: HotelListComponent },
   { path: 'hotels/:id', component: HotelDetailComponent },
   { path: 'bookings', component: MyBookingsComponent, canActivate: [authGuard] },
+  { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
   { path: '**', component: NotFoundComponent },
 ];

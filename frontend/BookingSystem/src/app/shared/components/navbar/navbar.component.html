@@ -10,6 +10,7 @@
             <a routerLink="/hotels" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Hotels</a>
 
             @if (loggedIn()) {
+            <a routerLink="/profile" routerLinkActive="active">Profile</a>
             <a routerLink="/bookings" routerLinkActive="active">My bookings</a>
             <button class="btn btn-secondary" type="button" (click)="logout()">Logout</button>
             } @else {
