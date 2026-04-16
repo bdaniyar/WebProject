@@ -9,6 +9,6 @@ export class RoomService {
 
     getRoomsByHotel(hotelId: number) {
         const params = new HttpParams().set('hotel_id', String(hotelId));
-        return this.http.get<Room[]>(`${API_BASE_URL}rooms`, { params });
+        return this.http.get<Room[]>(`${API_BASE_URL}rooms/`, { params });
     }
 }

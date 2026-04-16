@@ -19,9 +19,12 @@
     <div class="list">
         @for (b of bookings; track b.id) {
         <article class="card booking-card">
-            <div><strong>Room:</strong> {{ b.room }}</div>
-            <div><strong>Start:</strong> {{ b.start_date }}</div>
-            <div><strong>End:</strong> {{ b.end_date }}</div>
+            <div><strong>Hotel:</strong> {{ b.room?.hotel?.name }}</div>
+            <div><strong>Room:</strong> #{{ b.room?.id }} ({{ b.room?.capacity }} guests)</div>
+            <div><strong>Check-in:</strong> {{ b.check_in }}</div>
+            <div><strong>Check-out:</strong> {{ b.check_out }}</div>
+            <div><strong>Status:</strong> {{ b.status }}</div>
+            <div><strong>Total:</strong> ${{ b.total_price }}</div>
             <button class="btn btn-danger cancel-btn" type="button" (click)="cancelBooking(b.id)"
                 [disabled]="cancellingId === b.id">
                 {{ cancellingId === b.id ? 'Cancelling...' : 'Cancel booking' }}

@@ -16,7 +16,7 @@ export class AuthService {
 
     login(email: string, password: string) {
         return this.http
-            .post<LoginResponse>(`${API_BASE_URL}login`, { email, password })
+            .post<LoginResponse>(`${API_BASE_URL}auth/login/`, { email, password })
             .pipe(
                 tap((res) => {
                     if (res?.access) {

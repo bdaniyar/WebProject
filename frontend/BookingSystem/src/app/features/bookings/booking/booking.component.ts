@@ -27,6 +27,8 @@ export class BookingComponent {
         return !!this.startDate && !!this.endDate && this.endDate < this.startDate;
     }
 
+    guests = 1;
+
     bookRoom() {
         this.message = null;
         this.error = null;
@@ -48,7 +50,12 @@ export class BookingComponent {
 
         this.loading = true;
         this.bookingApi
-            .createBooking({ room: this.roomId, start_date: this.startDate, end_date: this.endDate })
+            .createBooking({
+                room_id: this.roomId,
+                check_in: this.startDate,
+                check_out: this.endDate,
+                guests: this.guests || 1,
+            })
             .subscribe({
                 next: () => {
                     this.loading = false;

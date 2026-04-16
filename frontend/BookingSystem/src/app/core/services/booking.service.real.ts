@@ -8,14 +8,14 @@ export class BookingService {
     private readonly http = inject(HttpClient);
 
     createBooking(payload: CreateBookingRequest) {
-        return this.http.post<Booking>(`${API_BASE_URL}bookings`, payload);
+        return this.http.post<Booking>(`${API_BASE_URL}bookings/`, payload);
     }
 
     getMyBookings() {
-        return this.http.get<Booking[]>(`${API_BASE_URL}bookings/my`);
+        return this.http.get<Booking[]>(`${API_BASE_URL}bookings/`);
     }
 
     cancelBooking(id: number) {
-        return this.http.delete<void>(`${API_BASE_URL}bookings/${id}`);
+        return this.http.delete<void>(`${API_BASE_URL}bookings/${id}/`);
     }
 }

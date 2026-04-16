@@ -58,7 +58,7 @@ export class AuthService {
     }
 
     return this.http
-      .post<LoginResponse>(`${API_BASE_URL}login`, { email, password })
+      .post<LoginResponse>(`${API_BASE_URL}auth/login/`, { username: email, password })
       .pipe(
         tap((res) => {
           if (res?.access) {
@@ -111,7 +111,7 @@ export class AuthService {
     }
 
     return this.http
-      .post<LoginResponse>(`${API_BASE_URL}register`, { name, email, password })
+      .post<LoginResponse>(`${API_BASE_URL}auth/register/`, { username: email, email, password, first_name: name })
       .pipe(
         tap((res) => {
           if (res?.access) {
@@ -148,7 +148,7 @@ export class AuthService {
       return of({ ok: true as const, data: demoUser }).pipe(delay(180));
     }
 
-    return this.http.get<User>(`${API_BASE_URL}user/me`).pipe(
+    return this.http.get<User>(`${API_BASE_URL}user/me/`).pipe(
       tap((user) => this.setCurrentUser(user)),
       map((user) => ({ ok: true as const, data: user })),
       catchError((err) => of({ ok: false as const, error: this.extractError(err) })),
@@ -156,91 +156,41 @@ export class AuthService {
   }
 
   updateProfile(name: string, email: string) {
-    if (USE_MOCK_API) {
-      const trimmedName = name.trim();
-      const trimmedEmail = email.trim();
-
-      if (!trimmedName || !trimmedEmail) {
-        return of({ ok: false as const, error: 'Name and email are required.' }).pipe(delay(180));
-      }
-
-      if (!trimmedEmail.includes('@')) {
-        return of({ ok: false as const, error: 'Please enter a valid email address.' }).pipe(delay(180));
-      }
-
-      const user = this.currentUser();
-      if (!user?.email) {
-        return of({ ok: false as const, error: 'No active user found.' }).pipe(delay(180));
-      }
-
-      const users = this.readMockUsers();
-      const duplicateEmail = users.some(
-        (candidate) =>
-          candidate.email.toLowerCase() === trimmedEmail.toLowerCase() &&
-          candidate.email.toLowerCase() !== user.email!.toLowerCase(),
-      );
-      if (duplicateEmail) {
-        return of({ ok: false as const, error: 'This email is already in use.' }).pipe(delay(220));
-      }
-
-      const updatedUsers = users.map((u) =>
-        u.email.toLowerCase() === user.email!.toLowerCase()
-          ? { ...u, name: trimmedName, email: trimmedEmail }
-          : u,
-      );
-      this.writeMockUsers(updatedUsers);
-
-      const updatedUser: User = {
-        ...user,
-        email: trimmedEmail,
-        first_name: trimmedName,
-      };
-      this.setCurrentUser(updatedUser);
-
-      return of({ ok: true as const, data: updatedUser }).pipe(delay(260));
+    if (!name.trim() || !email.trim()) {
+      return of({ ok: false as const, error: 'Name and email are required.' }).pipe(delay(180));
     }
 
-    return this.http.put<User>(`${API_BASE_URL}user/me`, { first_name: name.trim(), email: email.trim() }).pipe(
-      tap((user) => this.setCurrentUser(user)),
-      map((user) => ({ ok: true as const, data: user })),
-      catchError((err) => of({ ok: false as const, error: this.extractError(err) })),
-    );
+    if (!email.includes('@')) {
+      return of({ ok: false as const, error: 'Please enter a valid email address.' }).pipe(delay(180));
+    }
+
+    return this.http
+      .put<User>(`${API_BASE_URL}user/me/`, { first_name: name.trim(), email: email.trim() })
+      .pipe(
+        tap((user) => this.setCurrentUser(user)),
+        map((user) => ({ ok: true as const, data: user })),
+        catchError((err) => of({ ok: false as const, error: this.extractError(err) })),
+      );
   }
 
   changePassword(currentPassword: string, newPassword: string) {
-    if (USE_MOCK_API) {
-      if (!currentPassword.trim() || !newPassword.trim()) {
-        return of({ ok: false as const, error: 'Both password fields are required.' }).pipe(delay(180));
-      }
-      if (newPassword.length < 6) {
-        return of({ ok: false as const, error: 'New password must be at least 6 characters.' }).pipe(delay(180));
-      }
-
-      const user = this.currentUser();
-      if (!user?.email) {
-        return of({ ok: false as const, error: 'No active user found.' }).pipe(delay(180));
-      }
-
-      const users = this.readMockUsers();
-      const target = users.find((u) => u.email.toLowerCase() === user.email!.toLowerCase());
-      if (!target || target.password !== currentPassword) {
-        return of({ ok: false as const, error: 'Current password is incorrect.' }).pipe(delay(240));
-      }
-
-      const updatedUsers = users.map((u) =>
-        u.email.toLowerCase() === user.email!.toLowerCase() ? { ...u, password: newPassword } : u,
-      );
-      this.writeMockUsers(updatedUsers);
-      return of({ ok: true as const }).pipe(delay(240));
+    if (!currentPassword.trim() || !newPassword.trim()) {
+      return of({ ok: false as const, error: 'Both password fields are required.' }).pipe(delay(180));
     }
 
-    return this.http.post(`${API_BASE_URL}user/change-password`, {
-      current_password: currentPassword,
-      new_password: newPassword,
-    }).pipe(
-      map(() => ({ ok: true as const })),
-      catchError((err) => of({ ok: false as const, error: this.extractError(err) })),
-    );
+    if (newPassword.length < 6) {
+      return of({ ok: false as const, error: 'New password must be at least 6 characters.' }).pipe(delay(180));
+    }
+
+    return this.http
+      .post(`${API_BASE_URL}user/change-password/`, {
+        current_password: currentPassword,
+        new_password: newPassword,
+      })
+      .pipe(
+        map(() => ({ ok: true as const })),
+        catchError((err) => of({ ok: false as const, error: this.extractError(err) })),
+      );
   }
 
   private readMockUsers(): MockUser[] {

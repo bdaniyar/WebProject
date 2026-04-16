@@ -1,13 +1,24 @@
+import { Room } from './room.model';
+
 export interface Booking {
     id: number;
-    room: number; // room id
-    start_date: string; // ISO date
-    end_date: string; // ISO date
-    user: number; // user id
+
+    // DRF contract
+    room: Room;
+    check_in: string; // ISO date
+    check_out: string; // ISO date
+    guests: number;
+    status: string;
+    total_price: number;
+
+    // legacy / transitional fields (remove after UI migration)
+    start_date?: string;
+    end_date?: string;
 }
 
 export interface CreateBookingRequest {
-    room: number;
-    start_date: string;
-    end_date: string;
+    room_id: number;
+    check_in: string;
+    check_out: string;
+    guests: number;
 }

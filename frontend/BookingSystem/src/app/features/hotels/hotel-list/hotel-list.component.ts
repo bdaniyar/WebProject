@@ -45,12 +45,12 @@ export class HotelListComponent {
     }
 
     get locations(): string[] {
-        return [...new Set(this.hotels.map((hotel) => hotel.location).filter(Boolean))].sort();
+        return [...new Set(this.hotels.map((hotel) => hotel.city).filter(Boolean))].sort();
     }
 
     applyFilters() {
         this.filteredHotels = this.hotels.filter((hotel) => {
-            return !this.selectedLocation || hotel.location === this.selectedLocation;
+            return !this.selectedLocation || hotel.city === this.selectedLocation;
         });
     }
 

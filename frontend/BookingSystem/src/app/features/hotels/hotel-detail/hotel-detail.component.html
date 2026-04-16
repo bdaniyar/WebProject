@@ -11,7 +11,7 @@
     @if (hotel) {
     <div class="card hotel-card">
         <h2>{{ hotel.name }}</h2>
-        <p class="muted">{{ hotel.location }}</p>
+        <p class="muted">{{ hotel.city || hotel.location }}</p>
         <p class="description">{{ hotel.description }}</p>
     </div>
 
@@ -21,8 +21,9 @@
         <article class="card room-card">
             <div class="room-content">
                 <div>
-                    <div><strong>Price:</strong> ${{ room.price }} / night</div>
+                    <div><strong>Price:</strong> ${{ room.price_per_night }} / night</div>
                     <div><strong>Capacity:</strong> {{ room.capacity }} guests</div>
+                    <div><strong>Available:</strong> {{ room.available_units }} / {{ room.total_units }}</div>
                 </div>
             </div>
 

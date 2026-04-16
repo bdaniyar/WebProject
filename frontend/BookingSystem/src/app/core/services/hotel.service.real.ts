@@ -9,10 +9,10 @@ export class HotelService {
     private readonly http = inject(HttpClient);
 
     getHotels() {
-        return this.http.get<Hotel[]>(`${API_BASE_URL}hotels`);
+        return this.http.get<Hotel[]>(`${API_BASE_URL}hotels/`);
     }
 
     getHotel(id: number) {
-        return this.http.get<Hotel>(`${API_BASE_URL}hotels/${id}`);
+        return this.http.get<Hotel>(`${API_BASE_URL}hotels/${id}/`);
     }
 }

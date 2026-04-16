@@ -1,1 +1,2 @@
-export const API_BASE_URL = 'http://localhost:8000/api/';
+// When running via `ng serve`, requests are proxied to Django using `proxy.conf.json`.
+export const API_BASE_URL = '/api/';

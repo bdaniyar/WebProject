@@ -16,7 +16,8 @@
     <div class="filters card">
         <div class="filter-group">
             <label for="location">Location</label>
-            <select id="location" class="input" name="location" [(ngModel)]="selectedLocation" (ngModelChange)="applyFilters()">
+            <select id="location" class="input" name="location" [(ngModel)]="selectedLocation"
+                (ngModelChange)="applyFilters()">
                 <option value="">All locations</option>
                 @for (location of locations; track location) {
                 <option [value]="location">{{ location }}</option>
@@ -34,7 +35,7 @@
         @for (hotel of filteredHotels; track hotel.id) {
         <article class="card hotel-card">
             <h3>{{ hotel.name }}</h3>
-            <p class="muted">{{ hotel.location }}</p>
+            <p class="muted">{{ hotel.city }}</p>
             <p class="description">{{ hotel.description }}</p>
             <a class="btn btn-primary details-btn" [routerLink]="['/hotels', hotel.id]">View Details</a>
         </article>
