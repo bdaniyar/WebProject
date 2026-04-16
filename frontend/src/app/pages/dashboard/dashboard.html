@@ -1,0 +1,160 @@
+@if (!isAuthenticated) {
+<section class="panel gated">
+  <div class="eyebrow">Bookings</div>
+  <h1>Sign in to manage reservations</h1>
+  <p>
+    Your bookings are tied to your account. Login to create, edit, and cancel reservations.
+  </p>
+  <div class="gated-actions">
+    <button class="primary-btn" type="button" (click)="goToLogin()">Login</button>
+    <button class="secondary-btn" type="button" (click)="goToHotels()">Browse hotels</button>
+  </div>
+</section>
+} @else {
+@if (error()) {
+<section class="status status-error">{{ error() }}</section>
+}
+
+@if (success()) {
+<section class="status status-success">{{ success() }}</section>
+}
+
+<section class="dashboard-grid">
+  <article class="panel overview">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Guest Dashboard</div>
+        <h1>Manage current reservations</h1>
+      </div>
+      <button class="secondary-btn" type="button" (click)="refreshDashboard()">Refresh data</button>
+    </div>
+
+    @if (dashboard(); as data) {
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span>Active bookings</span>
+        <strong>{{ data.active_bookings }}</strong>
+      </div>
+      <div class="stat-card">
+        <span>Total spent</span>
+        <strong>${{ data.total_spent }}</strong>
+      </div>
+      <div class="stat-card">
+        <span>Upcoming check-in</span>
+        <strong>{{ data.upcoming_check_in || 'Not scheduled' }}</strong>
+      </div>
+    </div>
+    }
+  </article>
+
+  <form class="panel composer" (ngSubmit)="submitBooking()">
+    <div class="eyebrow">Booking Composer</div>
+    <h2>{{ editingBookingId ? 'Edit reservation' : 'Create reservation' }}</h2>
+
+    <label class="label">
+      Room
+      <select class="select" name="room_id" [(ngModel)]="bookingForm.room_id">
+        <option [ngValue]="null">Choose a room</option>
+        @for (room of rooms(); track room.id) {
+        <option [ngValue]="room.id">
+          {{ room.hotel.name }} / {{ room.title }} / ${{ room.price_per_night }}
+        </option>
+        }
+      </select>
+    </label>
+
+    <div class="form-grid">
+      <label class="label">
+        Check-in
+        <input class="field" name="check_in" [(ngModel)]="bookingForm.check_in" type="date" />
+      </label>
+
+      <label class="label">
+        Check-out
+        <input class="field" name="check_out" [(ngModel)]="bookingForm.check_out" type="date" />
+      </label>
+    </div>
+
+    <label class="label">
+      Guests
+      <input class="field" name="guests" [(ngModel)]="bookingForm.guests" type="number" min="1" />
+    </label>
+
+    <label class="label">
+      Special request
+      <textarea class="textarea" name="special_request" rows="4" [(ngModel)]="bookingForm.special_request"
+        placeholder="Airport pickup, quiet room, late check-in..."></textarea>
+    </label>
+
+    @if (selectedRoom(); as room) {
+    <div class="selected-room">
+      <strong>{{ room.hotel.name }} / {{ room.title }}</strong>
+      <span>${{ room.price_per_night }} per night · {{ room.available_units }} available</span>
+    </div>
+    }
+
+    <div class="composer-actions">
+      <button class="primary-btn" type="submit">{{ saving() ? 'Saving...' : 'Save booking' }}</button>
+      <button class="secondary-btn" type="button" (click)="resetForm()">Reset form</button>
+    </div>
+  </form>
+</section>
+
+<section class="dashboard-bottom">
+  <article class="panel bookings-list">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Bookings</div>
+        <h2>Your reservation history</h2>
+      </div>
+      @if (loading()) {
+      <span class="loading-note">Updating...</span>
+      }
+    </div>
+
+    @if (dashboard()?.bookings?.length) {
+    <div class="booking-cards">
+      @for (booking of dashboard()?.bookings ?? []; track booking.id) {
+      <article class="booking-card">
+        <div>
+          <strong>{{ booking.room.hotel.name }} / {{ booking.room.title }}</strong>
+          <p>{{ booking.check_in }} to {{ booking.check_out }} · {{ booking.guests }} guest(s)</p>
+        </div>
+        <div class="booking-meta">
+          <span class="pill">{{ booking.status }}</span>
+          <strong>${{ booking.total_price }}</strong>
+        </div>
+        <div class="booking-actions">
+          <button class="secondary-btn" type="button" (click)="startEdit(booking)">Edit</button>
+          <button class="secondary-btn" type="button" (click)="cancelBooking(booking.id)">Cancel</button>
+        </div>
+      </article>
+      }
+    </div>
+    } @else {
+    <p class="empty-note">No bookings yet. Create the first one from the form.</p>
+    }
+  </article>
+
+  <article class="panel room-picks">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Quick Picks</div>
+        <h2>Recommended rooms</h2>
+      </div>
+    </div>
+
+    <div class="pick-grid">
+      @for (room of dashboard()?.recommended_rooms ?? []; track room.id) {
+      <article class="pick-card">
+        <div class="pick-image" [style.background-image]="'url(' + (room.image_url || '') + ')'"></div>
+        <h3>{{ room.hotel.name }}</h3>
+        <p>{{ room.title }} · {{ room.capacity }} guests</p>
+        <strong>${{ room.price_per_night }} / night</strong>
+        <button class="primary-btn" type="button" (click)="chooseRoom(room.id)">Use this room</button>
+      </article>
+      }
+    </div>
+  </article>
+</section>
+}

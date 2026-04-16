@@ -1,0 +1,140 @@
+.hotels-layout {
+    display: grid;
+    gap: 1rem;
+}
+
+.composer-wrap {
+    margin-top: 1rem;
+}
+
+.hotels-shell {
+    padding: 1.25rem;
+}
+
+.subtitle {
+    margin-top: 0.35rem;
+    color: var(--text-secondary);
+}
+
+.hotel-list {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.hover-card {
+    transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.hover-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.hotel-card {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(15, 23, 42, 0.10);
+    background: #ffffff;
+}
+
+.hotel-image {
+    min-height: 190px;
+    background-size: cover;
+    background-position: center;
+    background-color: rgba(11, 94, 215, 0.08);
+}
+
+.hotel-body {
+    padding: 1rem;
+    display: grid;
+    gap: 0.6rem;
+}
+
+.name {
+    font-size: 1.25rem;
+}
+
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.right {
+    display: grid;
+    gap: 0.35rem;
+    justify-items: end;
+}
+
+.rating {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 999px;
+    background: var(--primary-100);
+    color: var(--primary-600);
+    font-weight: 700;
+}
+
+.price {
+    text-align: right;
+}
+
+.price strong {
+    font-size: 1.1rem;
+}
+
+.price span {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.meta {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.muted {
+    color: var(--text-muted);
+}
+
+.clamp-2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+}
+
+@media (max-width: 980px) {
+    .hotel-card {
+        grid-template-columns: 1fr;
+    }
+
+    .hotel-image {
+        min-height: 200px;
+    }
+
+    .actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .right {
+        justify-items: start;
+    }
+}

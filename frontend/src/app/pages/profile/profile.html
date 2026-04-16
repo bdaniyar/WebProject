@@ -1,0 +1,72 @@
+@if (!isAuthenticated()) {
+<section class="panel profile-shell">
+    <div class="eyebrow">Profile</div>
+    <h1>Please sign in</h1>
+    <p class="muted">You need an account to view and edit your profile.</p>
+</section>
+} @else {
+<section class="panel profile-shell">
+    <div class="section-head">
+        <div>
+            <div class="eyebrow">Profile</div>
+            <h1>{{ displayName() }}</h1>
+            <p class="muted">Update your personal information and password.</p>
+        </div>
+        <button class="secondary-btn" type="button" (click)="loadProfile()" [disabled]="busy()">
+            {{ busy() ? 'Refreshing...' : 'Refresh' }}
+        </button>
+    </div>
+
+    @if (error()) {
+    <div class="status status-error">{{ error() }}</div>
+    }
+    @if (success()) {
+    <div class="status status-success">{{ success() }}</div>
+    }
+
+    <div class="grid">
+        <form class="card" (ngSubmit)="saveProfile()">
+            <h2>Personal details</h2>
+
+            <div class="form-grid">
+                <label class="label">
+                    First name
+                    <input class="field" name="first_name" [(ngModel)]="profileForm.first_name" />
+                </label>
+
+                <label class="label">
+                    Last name
+                    <input class="field" name="last_name" [(ngModel)]="profileForm.last_name" />
+                </label>
+            </div>
+
+            <label class="label">
+                Email
+                <input class="field" name="email" [(ngModel)]="profileForm.email" type="email" />
+            </label>
+
+            <button class="primary-btn" type="submit" [disabled]="busy()">
+                {{ busy() ? 'Saving...' : 'Save changes' }}
+            </button>
+        </form>
+
+        <form class="card" (ngSubmit)="changePassword()">
+            <h2>Change password</h2>
+
+            <label class="label">
+                Current password
+                <input class="field" name="old_password" [(ngModel)]="passwordForm.old_password" type="password" />
+            </label>
+
+            <label class="label">
+                New password
+                <input class="field" name="new_password" [(ngModel)]="passwordForm.new_password" type="password" />
+            </label>
+
+            <button class="primary-btn" type="submit" [disabled]="busy()">
+                {{ busy() ? 'Updating...' : 'Update password' }}
+            </button>
+        </form>
+    </div>
+</section>
+}

@@ -1,0 +1,65 @@
+<section class="hotels-layout">
+    <div class="panel hotels-shell">
+        <div class="section-head">
+            <div>
+                <div class="eyebrow">Hotels</div>
+                <h1>Browse stays</h1>
+                <p class="subtitle">Compare locations, ratings, and starting prices.</p>
+            </div>
+            <button class="secondary-btn" type="button" (click)="loadHotels()">
+                {{ loading() ? 'Refreshing...' : 'Refresh' }}
+            </button>
+        </div>
+
+        <div class="composer-wrap">
+            <app-booking-composer title="Create reservation"
+                subtitle="Choose a room, dates, guests and leave a special request." />
+        </div>
+
+        @if (error()) {
+        <div class="status status-error">{{ error() }}</div>
+        }
+
+        @if (loading()) {
+        <p class="muted">Loading hotels...</p>
+        } @else {
+        <div class="hotel-list">
+            @for (hotel of hotels(); track hotel.id) {
+            <article class="hotel-card hover-card">
+                <div class="hotel-image" [style.background-image]="'url(' + (hotel.hero_image || '') + ')'"></div>
+
+                <div class="hotel-body">
+                    <div class="top-row">
+                        <div>
+                            <h2 class="name">{{ hotel.name }}</h2>
+                            <div class="muted">{{ hotel.city }} · {{ hotel.address }}</div>
+                        </div>
+
+                        <div class="right">
+                            <div class="rating"><strong>{{ hotel.rating }}</strong><span>/5</span></div>
+                            @if (hotel.starting_price) {
+                            <div class="price">
+                                <strong>${{ hotel.starting_price }}</strong>
+                                <span>per night</span>
+                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    <p class="muted clamp-2">{{ hotel.description }}</p>
+
+                    <div class="actions">
+                        <a class="primary-btn link-btn" [routerLink]="['/hotels', hotel.id]">View details</a>
+                        <span class="meta">{{ hotel.room_count }} room type(s)</span>
+                    </div>
+                </div>
+            </article>
+            }
+
+            @if (!hotels().length) {
+            <p class="muted">No hotels found.</p>
+            }
+        </div>
+        }
+    </div>
+</section>

@@ -1,0 +1,69 @@
+<section class="auth-grid">
+  <article class="panel auth-intro">
+    <div class="eyebrow">JWT Authentication</div>
+    <h1>Sign in fast, then create, edit, and cancel bookings from one place.</h1>
+    <p>
+      This page covers the login/logout requirement and provides a quick registration flow for demo
+      use. The default seeded account is <strong>demo / demo1234</strong>.
+    </p>
+
+    <button class="secondary-btn" type="button" (click)="fillDemo()">Use demo credentials</button>
+  </article>
+
+  <form class="panel auth-card" (ngSubmit)="submitLogin()">
+    <div class="eyebrow">Login</div>
+    <h2>Welcome back</h2>
+
+    <label class="label">
+      Username
+      <input class="field" name="username" [(ngModel)]="credentials.username" />
+    </label>
+
+    <label class="label">
+      Password
+      <input class="field" name="password" [(ngModel)]="credentials.password" type="password" />
+    </label>
+
+    <button class="primary-btn" type="submit">{{ busy() ? 'Signing in...' : 'Login' }}</button>
+  </form>
+
+  <form class="panel auth-card" (ngSubmit)="submitRegister()">
+    <div class="eyebrow">Register</div>
+    <h2>Create a guest account</h2>
+
+    <label class="label">
+      First name
+      <input class="field" name="first_name" [(ngModel)]="registerForm.first_name" />
+    </label>
+
+    <label class="label">
+      Last name
+      <input class="field" name="last_name" [(ngModel)]="registerForm.last_name" />
+    </label>
+
+    <label class="label">
+      Username
+      <input class="field" name="register_username" [(ngModel)]="registerForm.username" />
+    </label>
+
+    <label class="label">
+      Email
+      <input class="field" name="email" [(ngModel)]="registerForm.email" type="email" />
+    </label>
+
+    <label class="label">
+      Password
+      <input class="field" name="register_password" [(ngModel)]="registerForm.password" type="password" />
+    </label>
+
+    <button class="secondary-btn" type="submit">{{ busy() ? 'Creating...' : 'Register' }}</button>
+  </form>
+</section>
+
+@if (error()) {
+  <section class="status status-error">{{ error() }}</section>
+}
+
+@if (success()) {
+  <section class="status status-success">{{ success() }}</section>
+}
