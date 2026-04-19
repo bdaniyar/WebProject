@@ -1,0 +1,69 @@
+<section class="panel composer">
+    <div class="head">
+        <div>
+            <div class="eyebrow">Booking composer</div>
+            <h2>{{ title }}</h2>
+            <p class="muted">{{ subtitle }}</p>
+        </div>
+
+        <button class="secondary-btn" type="button" (click)="loadRooms()" [disabled]="loadingRooms">
+            {{ loadingRooms ? 'Loading...' : 'Reload rooms' }}
+        </button>
+    </div>
+
+    @if (error) {
+    <div class="status status-error">{{ error }}</div>
+    }
+    @if (success) {
+    <div class="status status-success">{{ success }}</div>
+    }
+
+    <form class="form" (ngSubmit)="submit()">
+        <label class="label">
+            Room
+            <select class="select" name="room_id" [(ngModel)]="form.room_id" (ngModelChange)="success = ''">
+                <option [ngValue]="null">Choose a room</option>
+                @for (room of rooms; track room.id) {
+                <option [ngValue]="room.id">
+                    {{ room.hotel.name }} ({{ room.hotel.city }}) · {{ room.title }} · ${{ room.price_per_night }}
+                </option>
+                }
+            </select>
+        </label>
+
+        <div class="grid">
+            <label class="label">
+                Check-in
+                <input class="field" name="check_in" [(ngModel)]="form.check_in" type="date"
+                    (ngModelChange)="success = ''" />
+            </label>
+
+            <label class="label">
+                Check-out
+                <input class="field" name="check_out" [(ngModel)]="form.check_out" type="date"
+                    (ngModelChange)="success = ''" />
+            </label>
+
+            <label class="label">
+                Guests
+                <input class="field" name="guests" [(ngModel)]="form.guests" type="number" min="1"
+                    (change)="loadRooms()" />
+            </label>
+        </div>
+
+        <label class="label">
+            Special request
+            <textarea class="textarea" name="special_request" rows="3" [(ngModel)]="form.special_request"
+                placeholder="Late check-in, quiet room, airport pickup..." (ngModelChange)="success = ''"></textarea>
+        </label>
+
+        <button class="primary-btn" type="submit" [disabled]="saving">
+            {{ saving ? 'Creating...' : 'Create reservation' }}
+        </button>
+
+        <p class="hint muted">
+            Reservations are saved to your account. You can edit/cancel them in
+            <a class="link" routerLink="/bookings">Bookings</a>.
+        </p>
+    </form>
+</section>
