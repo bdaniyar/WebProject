@@ -1,0 +1,127 @@
+.shell {
+  min-height: 100vh;
+}
+
+/* Sticky navbar */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.topbar-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0.85rem 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.brand-title {
+  font-size: 1.05rem;
+}
+
+.brand-mark {
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--primary), #0aa2ff);
+  color: #ffffff;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  box-shadow: 0 12px 26px rgba(11, 94, 215, 0.22);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.nav a,
+.user-chip,
+.ghost-btn {
+  border-radius: 999px;
+  padding: 0.55rem 0.85rem;
+}
+
+.nav a {
+  text-decoration: none;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+  transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+
+.nav a:hover {
+  background: rgba(11, 94, 215, 0.08);
+  color: var(--text-primary);
+}
+
+.nav a.active {
+  background: var(--primary-100);
+  color: var(--primary-600);
+  border-color: rgba(11, 94, 215, 0.18);
+}
+
+.user-chip {
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.ghost-btn {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  color: var(--text-primary);
+}
+
+.ghost-btn:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.page-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 1.2rem;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .topbar-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav {
+    width: 100%;
+  }
+
+  .nav a,
+  .ghost-btn,
+  .user-chip {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+}
