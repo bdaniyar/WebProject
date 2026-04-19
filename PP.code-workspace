@@ -1,0 +1,34 @@
+{
+	"folders": [
+		{
+			"path": "../../../PP"
+		},
+		{
+			"path": "../.."
+		}
+	],
+	"settings": {
+		"terminal.integrated.defaultProfile.windows": "Command Prompt",
+		"files.associations": {
+			"iostream": "cpp",
+			"complex": "cpp",
+			"array": "cpp",
+			"deque": "cpp",
+			"forward_list": "cpp",
+			"list": "cpp",
+			"vector": "cpp",
+			"string_view": "cpp",
+			"span": "cpp",
+			"new": "cpp",
+			"ostream": "cpp",
+			"cmath": "cpp",
+			"bitset": "cpp",
+			"initializer_list": "cpp",
+			"ranges": "cpp",
+			"stacktrace": "cpp",
+			"regex": "cpp",
+			"valarray": "cpp",
+			"chrono": "cpp"
+		}
+	}
+}
