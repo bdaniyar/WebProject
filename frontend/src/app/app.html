@@ -1,0 +1,26 @@
+<div class="shell">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" routerLink="/hotels" aria-label="Hotel Booking System">
+        <span class="brand-mark">HB</span>
+        <span class="brand-title">Hotel Booking System</span>
+      </a>
+
+      <nav class="nav">
+        <a routerLink="/hotels" routerLinkActive="active">Hotels</a>
+        <a routerLink="/bookings" routerLinkActive="active">Bookings</a>
+        <a routerLink="/profile" routerLinkActive="active" [class.hidden]="!isAuthenticated()">Profile</a>
+        <a routerLink="/login" routerLinkActive="active" [class.hidden]="isAuthenticated()">Login / Register</a>
+
+        @if (isAuthenticated()) {
+        <span class="user-chip" title="Signed in">{{ displayName() }}</span>
+        <button class="ghost-btn" type="button" (click)="logout()">Logout</button>
+        }
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <router-outlet />
+  </main>
+</div>
