@@ -18,4 +18,4 @@ parts/
 sdist/
 var/
 *.egg-info
-
+ёnstall-requires.txt
