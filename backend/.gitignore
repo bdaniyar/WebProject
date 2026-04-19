@@ -1,9 +1,12 @@
+# Python / virtualenv
 .venv/
 venv/
+
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+
+# Distribution / packaging
 .Python
 env/
 build/
@@ -18,4 +21,4 @@ parts/
 sdist/
 var/
 *.egg-info
-ёnstall-requires.txt
+install-requires.txt
