@@ -1,19 +1,57 @@
 <section class="hotels-layout">
-    <div class="panel hotels-shell">
-        <div class="section-head">
+    <section class="panel search-shell">
+        <div class="search-copy">
+            <div class="eyebrow">Hotels</div>
+            <h1>Find hotels by city</h1>
+            <p class="subtitle">
+                Enter city, dates and guests. First we show hotels, then inside the hotel you choose the room type.
+            </p>
+        </div>
+
+        <form class="search-form" (ngSubmit)="loadHotels()">
+            <label class="label">
+                City
+                <input class="field" name="city" [(ngModel)]="search.city" placeholder="Almaty" />
+            </label>
+
+            <label class="label">
+                Check-in
+                <input class="field" name="check_in" [(ngModel)]="search.check_in" type="date" />
+            </label>
+
+            <label class="label">
+                Check-out
+                <input class="field" name="check_out" [(ngModel)]="search.check_out" type="date" />
+            </label>
+
+            <label class="label">
+                Guests
+                <input class="field" name="guests" [(ngModel)]="search.guests" type="number" min="1" />
+            </label>
+
+            <div class="search-actions">
+                <button class="primary-btn" type="submit" [disabled]="loading()">
+                    {{ loading() ? 'Searching...' : 'Search hotels' }}
+                </button>
+                <button class="secondary-btn" type="button" (click)="resetSearch()" [disabled]="loading()">
+                    Reset
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section class="panel hotels-shell">
+        <div class="section-head results-head">
             <div>
-                <div class="eyebrow">Hotels</div>
-                <h1>Browse stays</h1>
-                <p class="subtitle">Compare locations, ratings, and starting prices.</p>
+                <div class="eyebrow">Results</div>
+                <h2>Available hotels</h2>
+                <p class="subtitle">
+                    {{ hotels().length }} hotel(s) for {{ search.city || 'all cities' }}.
+                </p>
             </div>
             <button class="secondary-btn" type="button" (click)="loadHotels()">
                 {{ loading() ? 'Refreshing...' : 'Refresh' }}
             </button>
-        </div>
-
-        <div class="composer-wrap">
-            <app-booking-composer title="Create reservation"
-                subtitle="Choose a room, dates, guests and leave a special request." />
         </div>
 
         @if (error()) {
@@ -32,7 +70,13 @@
                     <div class="top-row">
                         <div>
                             <h2 class="name">{{ hotel.name }}</h2>
-                            <div class="muted">{{ hotel.city }} · {{ hotel.address }}</div>
+                            <div class="location">
+                                <span>{{ hotel.city }}</span>
+                                @if (hotel.country) {
+                                <span class="muted location-country">{{ hotel.country }}</span>
+                                }
+                            </div>
+                            <div class="muted">{{ hotel.address }}</div>
                         </div>
 
                         <div class="right">
@@ -48,18 +92,35 @@
 
                     <p class="muted clamp-2">{{ hotel.description }}</p>
 
+                    <div class="room-preview-list">
+                        @for (room of hotel.rooms; track room.id) {
+                        <div class="room-preview">
+                            <strong>{{ room.title }}</strong>
+                            <span>{{ room.capacity }} guests</span>
+                            <span>${{ room.price_per_night }} / night</span>
+                            <span>{{ room.available_units }} left</span>
+                        </div>
+                        }
+                    </div>
+
                     <div class="actions">
-                        <a class="primary-btn link-btn" [routerLink]="['/hotels', hotel.id]">View details</a>
-                        <span class="meta">{{ hotel.room_count }} room type(s)</span>
+                        <a class="primary-btn link-btn" [routerLink]="['/hotels', hotel.id]"
+                            [queryParams]="detailQueryParams()">
+                            Choose room type
+                        </a>
+                        <span class="meta">{{ hotel.room_count }} matching room type(s)</span>
                     </div>
                 </div>
             </article>
             }
 
             @if (!hotels().length) {
-            <p class="muted">No hotels found.</p>
+            <div class="empty-state">
+                <h3>No hotels found</h3>
+                <p class="muted">Try another city, adjust the dates, or lower the number of guests.</p>
+            </div>
             }
         </div>
         }
-    </div>
+    </section>
 </section>

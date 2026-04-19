@@ -22,11 +22,13 @@ export interface RoomPreview {
   total_units: number;
   image_url: string;
   amenities: Amenity[];
+  available_units: number;
 }
 
 export interface Hotel {
   id: number;
   name: string;
+  country: string;
   city: string;
   address: string;
   description: string;
@@ -44,6 +46,7 @@ export interface Room {
     id: number;
     name: string;
     city: string;
+    country: string;
     rating: number;
     featured: boolean;
   };
@@ -82,10 +85,20 @@ export interface DashboardData {
 
 export interface SearchFilters {
   city: string;
+  country: string;
   guests: number;
   check_in: string;
   check_out: string;
   hotel_id?: number;
+}
+
+export interface HotelSearchFilters {
+  city?: string;
+  country?: string;
+  guests?: number;
+  check_in?: string;
+  check_out?: string;
+  featured?: boolean;
 }
 
 export interface AvailabilityResponse {

@@ -30,6 +30,7 @@ export class DiscoverPage implements OnInit {
 
   search: SearchFilters = {
     city: 'Almaty',
+    country: '',
     guests: 2,
     check_in: addDays(6),
     check_out: addDays(8),
@@ -43,7 +44,7 @@ export class DiscoverPage implements OnInit {
     this.loadingHotels.set(true);
     this.error.set('');
 
-    this.api.getHotels(true).subscribe({
+    this.api.getHotels({ featured: true }).subscribe({
       next: (hotels) => this.hotels.set(hotels),
       error: (error) => this.error.set(readApiError(error)),
       complete: () => this.loadingHotels.set(false),

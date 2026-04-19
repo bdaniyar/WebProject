@@ -3,14 +3,40 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { API_BASE_URL } from './api.config';
-import { AvailabilityResponse, Booking, BookingPayload, DashboardData, Hotel, Room } from './models';
+import {
+  AvailabilityResponse,
+  Booking,
+  BookingPayload,
+  DashboardData,
+  Hotel,
+  HotelSearchFilters,
+  Room,
+} from './models';
 
 @Injectable({ providedIn: 'root' })
 export class HotelApiService {
   private readonly http = inject(HttpClient);
 
-  getHotels(featured = false): Observable<Hotel[]> {
-    const params = featured ? new HttpParams().set('featured', 'true') : undefined;
+  getHotels(filters: HotelSearchFilters = {}): Observable<Hotel[]> {
+    let params = new HttpParams();
+    if (filters.featured) {
+      params = params.set('featured', 'true');
+    }
+    if (filters.city) {
+      params = params.set('city', filters.city);
+    }
+    if (filters.country) {
+      params = params.set('country', filters.country);
+    }
+    if (filters.guests) {
+      params = params.set('guests', filters.guests);
+    }
+    if (filters.check_in) {
+      params = params.set('check_in', filters.check_in);
+    }
+    if (filters.check_out) {
+      params = params.set('check_out', filters.check_out);
+    }
     return this.http.get<Hotel[]>(`${API_BASE_URL}/hotels/`, { params });
   }
 
@@ -18,7 +44,13 @@ export class HotelApiService {
     return this.http.get<Hotel>(`${API_BASE_URL}/hotels/${hotelId}/`);
   }
 
-  getRooms(city = '', guests?: number, hotelId?: number): Observable<Room[]> {
+  getRooms(
+    city = '',
+    guests?: number,
+    hotelId?: number,
+    checkIn?: string,
+    checkOut?: string,
+  ): Observable<Room[]> {
     let params = new HttpParams();
     if (city) {
       params = params.set('city', city);
@@ -28,6 +60,12 @@ export class HotelApiService {
     }
     if (hotelId) {
       params = params.set('hotel_id', hotelId);
+    }
+    if (checkIn) {
+      params = params.set('check_in', checkIn);
+    }
+    if (checkOut) {
+      params = params.set('check_out', checkOut);
     }
     return this.http.get<Room[]>(`${API_BASE_URL}/rooms/`, { params });
   }

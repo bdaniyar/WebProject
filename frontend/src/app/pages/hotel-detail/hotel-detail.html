@@ -1,51 +1,92 @@
 <a class="back link-btn" routerLink="/hotels">← Back to hotels</a>
 
-<section class="panel detail-shell">
-    @if (error()) {
-    <div class="status status-error">{{ error() }}</div>
-    }
+<section class="detail-grid">
+    <section class="panel detail-shell">
+        @if (error()) {
+        <div class="status status-error">{{ error() }}</div>
+        }
 
-    @if (success()) {
-    <div class="status status-success">{{ success() }}</div>
-    }
+        @if (success()) {
+        <div class="status status-success">{{ success() }}</div>
+        }
 
-    @if (loading()) {
-    <p class="muted">Loading hotel...</p>
-    } @else {
-    @if (hotel(); as h) {
-    <div class="hero">
-        <div class="hero-image" [style.background-image]="'url(' + (h.hero_image || '') + ')'"></div>
-        <div class="hero-copy">
-            <div class="eyebrow">{{ h.city }}</div>
-            <h1>{{ h.name }}</h1>
-            <div class="muted">{{ h.address }}</div>
-            <p class="muted">{{ h.description }}</p>
-            <div class="rating"><strong>{{ h.rating }}</strong><span>/5</span></div>
+        @if (loading()) {
+        <p class="muted">Loading hotel...</p>
+        } @else {
+        @if (hotel(); as h) {
+        <div class="hero">
+            <div class="hero-image" [style.background-image]="'url(' + (h.hero_image || '') + ')'"></div>
+            <div class="hero-copy">
+                <div class="eyebrow">Hotel</div>
+                <h1>{{ h.name }}</h1>
+                <div class="location-line">{{ hotelLocation(h) }}</div>
+                <div class="muted">{{ h.address }}</div>
+                <p class="muted">{{ h.description }}</p>
+                <div class="hero-meta">
+                    <div class="rating"><strong>{{ h.rating }}</strong><span>/5</span></div>
+                    @if (h.starting_price) {
+                    <div class="starting-price">
+                        <strong>${{ h.starting_price }}</strong>
+                        <span>starting price</span>
+                    </div>
+                    }
+                </div>
+            </div>
         </div>
-    </div>
+        }
+        }
+    </section>
 
-    <div class="rooms-head">
-        <div>
-            <h2>Rooms</h2>
-            <p class="muted">Pick a room and book instantly.</p>
-        </div>
+    <aside class="panel stay-shell">
+        <div class="eyebrow">Booking</div>
+        <h2>Choose room type</h2>
+        <p class="muted">
+            Select stay details first. Then pick a room type below, like City King or Skyline Suite.
+        </p>
 
         <div class="filters">
             <label class="label small">
                 Check-in
-                <input class="field" [(ngModel)]="bookingForm.check_in" name="check_in" type="date" />
+                <input class="field" [(ngModel)]="bookingForm.check_in" name="check_in" type="date"
+                    (change)="updateStay()" />
             </label>
             <label class="label small">
                 Check-out
-                <input class="field" [(ngModel)]="bookingForm.check_out" name="check_out" type="date" />
+                <input class="field" [(ngModel)]="bookingForm.check_out" name="check_out" type="date"
+                    (change)="updateStay()" />
             </label>
             <label class="label small">
                 Guests
-                <input class="field" [(ngModel)]="bookingForm.guests" name="guests" type="number" min="1" />
+                <input class="field" [(ngModel)]="bookingForm.guests" name="guests" type="number" min="1"
+                    (change)="updateStay()" />
             </label>
         </div>
+
+        <div class="stay-summary">
+            <div>
+                <span class="summary-label">Nights</span>
+                <strong>{{ stayNights() }}</strong>
+            </div>
+            <div>
+                <span class="summary-label">Room types</span>
+                <strong>{{ rooms().length }}</strong>
+            </div>
+        </div>
+    </aside>
+</section>
+
+<section class="panel detail-shell">
+    <div class="rooms-head">
+        <div>
+            <h2>Available room types</h2>
+            <p class="muted">Choose a room category that fits your dates and guests.</p>
+        </div>
+        <div class="rooms-count">{{ rooms().length }} found</div>
     </div>
 
+    @if (roomsLoading()) {
+    <p class="muted">Loading room types...</p>
+    } @else {
     <div class="room-list">
         @for (room of rooms(); track room.id) {
         <article class="room-card hover-card">
@@ -53,22 +94,45 @@
             <div class="room-body">
                 <div class="top">
                     <div>
+                        <div class="room-state" [class.room-state-sold-out]="room.available_units < 1">
+                            @if (room.available_units < 1) {
+                            <span>Sold out</span>
+                            } @else {
+                            <span>{{ room.available_units }} left</span>
+                            }
+                        </div>
                         <h3>{{ room.title }}</h3>
-                        <div class="muted">Capacity: {{ room.capacity }} · Available: {{ room.available_units }}</div>
+                        <div class="muted">Up to {{ room.capacity }} guests</div>
                     </div>
                     <div class="price">
                         <strong>${{ room.price_per_night }}</strong>
                         <span>per night</span>
+                        @if (stayNights()) {
+                        <small>Total from ${{ estimatedPrice(room) }}</small>
+                        }
                     </div>
                 </div>
 
                 <p class="muted clamp-2">{{ room.description }}</p>
 
+                @if (room.amenities.length) {
+                <div class="amenity-row">
+                    @for (amenity of room.amenities; track amenity.id) {
+                    <span class="amenity-chip">{{ amenity.title }}</span>
+                    }
+                </div>
+                }
+
                 <div class="actions">
-                    <button class="primary-btn" type="button" (click)="bookNow(room.id)" [disabled]="saving()">
-                        {{ saving() ? 'Booking...' : 'Book now' }}
+                    <button class="primary-btn" type="button" (click)="bookNow(room.id)"
+                        [disabled]="saving() || room.available_units < 1">
+                        @if (room.available_units < 1) {
+                        <span>Sold out</span>
+                        } @else {
+                        <span>{{ saving() ? 'Booking...' : 'Book now' }}</span>
+                        }
                     </button>
-                    <span class="muted">{{ room.total_units }} unit(s)</span>
+                    <span class="muted">{{ room.total_units }} unit(s) in this category</span>
                 </div>
             </div>
         </article>
@@ -79,5 +143,78 @@
         }
     </div>
     }
-    }
+
+    <section class="reviews">
+        <div class="reviews-head">
+            <div>
+                <h2>Reviews</h2>
+                <p class="muted">Only guests who completed a stay can post a review.</p>
+            </div>
+        </div>
+
+        @if (reviewError()) {
+        <div class="status status-error">{{ reviewError() }}</div>
+        }
+
+        @if (reviewSuccess()) {
+        <div class="status status-success">{{ reviewSuccess() }}</div>
+        }
+
+        <form class="review-form" (ngSubmit)="submitReview()">
+            <div class="review-form-grid">
+                <label class="label small">
+                    Rating
+                    <select class="field" [(ngModel)]="reviewForm.rating" name="rating">
+                        <option [ngValue]="5">5 - Excellent</option>
+                        <option [ngValue]="4">4 - Good</option>
+                        <option [ngValue]="3">3 - OK</option>
+                        <option [ngValue]="2">2 - Poor</option>
+                        <option [ngValue]="1">1 - Bad</option>
+                    </select>
+                </label>
+
+                <label class="label small review-comment">
+                    Comment
+                    <textarea class="field" [(ngModel)]="reviewForm.comment" name="comment" rows="3"
+                        placeholder="Share details about cleanliness, location, staff, and overall experience..."></textarea>
+                </label>
+            </div>
+
+            <div class="review-actions">
+                <button class="primary-btn" type="submit" [disabled]="reviewsBusy() || !reviewForm.comment.trim()">
+                    {{ reviewsBusy() ? 'Submitting...' : 'Post review' }}
+                </button>
+                <span class="muted">{{ reviews().length }} review(s)</span>
+            </div>
+        </form>
+
+        <div class="review-list">
+            @if (reviewsBusy() && !reviews().length) {
+            <p class="muted">Loading reviews...</p>
+            }
+
+            @for (r of reviews(); track r.id) {
+            <article class="review-card">
+                <div class="review-top">
+                    <div class="review-author">
+                        <div class="avatar" aria-hidden="true">{{ (r.author_name || '?')[0] }}</div>
+                        <div>
+                            <div class="name">{{ r.author_name }}</div>
+                            <div class="date muted">{{ r.created_at | date:'mediumDate' }}</div>
+                        </div>
+                    </div>
+                    <div class="review-rating" [attr.aria-label]="'Rating ' + r.rating + ' out of 5'">
+                        <strong>{{ r.rating }}</strong><span>/5</span>
+                    </div>
+                </div>
+
+                <p class="comment">{{ r.comment }}</p>
+            </article>
+            }
+
+            @if (!reviewsBusy() && !reviews().length) {
+            <p class="muted">No reviews yet.</p>
+            }
+        </div>
+    </section>
 </section>

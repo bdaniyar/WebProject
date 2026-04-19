@@ -3,112 +3,80 @@ from decimal import Decimal
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 
+from api.demo_hotels_catalog import HOTELS_DATA
 from api.models import Amenity, Hotel, Review, Room
 
 
 class Command(BaseCommand):
-    help = 'Seed the project with demo hotels, rooms, users, and reviews.'
+    help = "Seed the project with demo hotels, rooms, users, and reviews."
 
     def handle(self, *args, **options):
         amenity_specs = [
-            ('Breakfast', 'utensils', 'Dining'),
-            ('Spa', 'sparkles', 'Wellness'),
-            ('Airport transfer', 'plane', 'Travel'),
-            ('Fast Wi-Fi', 'wifi', 'Tech'),
-            ('Pool', 'waves', 'Leisure'),
-            ('Workspace', 'briefcase', 'Business'),
+            ("Breakfast", "utensils", "Dining"),
+            ("Spa", "sparkles", "Wellness"),
+            ("Airport transfer", "plane", "Travel"),
+            ("Fast Wi-Fi", "wifi", "Tech"),
+            ("Pool", "waves", "Leisure"),
+            ("Workspace", "briefcase", "Business"),
         ]
         amenities = {}
         for title, icon, category in amenity_specs:
             amenity, _ = Amenity.objects.get_or_create(
                 title=title,
-                defaults={'icon': icon, 'category': category},
+                defaults={"icon": icon, "category": category},
             )
             amenities[title] = amenity
 
-        hotels_data = [
-            {
-                'name': 'Azure Stay',
-                'city': 'Almaty',
-                'address': '15 Dostyk Avenue',
-                'description': 'Minimal business hotel with skyline views and fast check-in.',
-                'hero_image': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80',
-                'featured': True,
-                'rooms': [
-                    ('City King', 2, '139.00', 4, ['Breakfast', 'Fast Wi-Fi', 'Workspace']),
-                    ('Skyline Suite', 3, '219.00', 2, ['Breakfast', 'Spa', 'Fast Wi-Fi']),
-                ],
-            },
-            {
-                'name': 'Nomad Harbor',
-                'city': 'Astana',
-                'address': '7 Mangilik El',
-                'description': 'Warm lounge spaces, family rooms, and airport-friendly access.',
-                'hero_image': 'https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8?auto=format&fit=crop&w=1200&q=80',
-                'featured': True,
-                'rooms': [
-                    ('Family Loft', 4, '189.00', 3, ['Breakfast', 'Pool', 'Airport transfer']),
-                    ('Quiet Studio', 2, '119.00', 5, ['Fast Wi-Fi', 'Workspace']),
-                ],
-            },
-            {
-                'name': 'Steppe Retreat',
-                'city': 'Shymkent',
-                'address': '48 Tauke Khan Street',
-                'description': 'Resort-style hideaway with wellness amenities and slower evenings.',
-                'hero_image': 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=1200&q=80',
-                'featured': False,
-                'rooms': [
-                    ('Garden Deluxe', 2, '149.00', 3, ['Spa', 'Pool', 'Breakfast']),
-                    ('Retreat Villa', 5, '279.00', 1, ['Spa', 'Pool', 'Airport transfer']),
-                ],
-            },
-        ]
-
-        for hotel_data in hotels_data:
-            rooms_data = hotel_data.pop('rooms')
+        for hotel_data in HOTELS_DATA:
+            rooms_data = hotel_data["rooms"]
+            hotel_defaults = {
+                key: value for key, value in hotel_data.items() if key != "rooms"
+            }
             hotel, _ = Hotel.objects.update_or_create(
-                name=hotel_data['name'],
-                defaults=hotel_data,
+                name=hotel_data["name"],
+                defaults=hotel_defaults,
             )
-            for title, capacity, price, total_units, amenity_titles in rooms_data:
+            room_titles = [room["title"] for room in rooms_data]
+            hotel.rooms.exclude(title__in=room_titles).delete()
+            for room_data in rooms_data:
                 room, _ = Room.objects.update_or_create(
                     hotel=hotel,
-                    title=title,
+                    title=room_data["title"],
                     defaults={
-                        'description': f'{title} at {hotel.name} for {capacity} guests.',
-                        'capacity': capacity,
-                        'price_per_night': Decimal(price),
-                        'total_units': total_units,
-                        'image_url': hotel.hero_image,
-                        'active': True,
+                        "description": room_data.get("description")
+                        or f"{room_data['title']} at {hotel.name} for {room_data['capacity']} guests.",
+                        "capacity": room_data["capacity"],
+                        "price_per_night": Decimal(room_data["price"]),
+                        "total_units": room_data["total_units"],
+                        "image_url": room_data.get("image_url") or hotel.hero_image,
+                        "active": True,
                     },
                 )
-                room.amenities.set([amenities[name] for name in amenity_titles])
+                room.amenities.set([amenities[name] for name in room_data["amenities"]])
 
         demo_user, created = User.objects.get_or_create(
-            username='demo',
+            username="demo",
             defaults={
-                'first_name': 'Demo',
-                'last_name': 'Guest',
-                'email': 'demo@example.com',
+                "first_name": "Demo",
+                "last_name": "Guest",
+                "email": "demo@example.com",
             },
         )
         if created:
-            demo_user.set_password('demo1234')
+            demo_user.set_password("demo1234")
             demo_user.save()
 
         reviewer, created = User.objects.get_or_create(
-            username='manager',
+            username="manager",
             defaults={
-                'first_name': 'Hotel',
-                'last_name': 'Manager',
-                'email': 'manager@example.com',
-                'is_staff': True,
+                "first_name": "Hotel",
+                "last_name": "Manager",
+                "email": "manager@example.com",
+                "is_staff": True,
             },
         )
         if created:
-            reviewer.set_password('manager1234')
+            reviewer.set_password("manager1234")
             reviewer.save()
 
         first_hotel = Hotel.objects.first()
@@ -117,7 +85,12 @@ class Command(BaseCommand):
                 author=reviewer,
                 hotel=first_hotel,
                 rating=5,
-                comment='Clean rooms, quick booking flow, and a very smooth front desk experience.',
+                comment="Clean rooms, quick booking flow, and a very smooth front desk experience.",
             )
 
-        self.stdout.write(self.style.SUCCESS('Demo data ready. Login: demo / demo1234'))
+        total_rooms = sum(len(hotel["rooms"]) for hotel in HOTELS_DATA)
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Demo data ready. Hotels: {len(HOTELS_DATA)}, rooms: {total_rooms}. Login: demo / demo1234"
+            )
+        )
