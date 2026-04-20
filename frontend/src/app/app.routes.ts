@@ -4,8 +4,8 @@ import { DashboardPage } from './pages/dashboard/dashboard';
 import { DiscoverPage } from './pages/discover/discover';
 import { HotelDetailPage } from './pages/hotel-detail/hotel-detail';
 import { HotelsPage } from './pages/hotels/hotels';
-import { LoginPage } from './pages/login/login';
-import { ProfilePage } from './pages/profile/profile';
+// import { LoginPage } from './pages/login/login';
+// import { ProfilePage } from './pages/profile/profile';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'hotels' },
@@ -19,8 +19,8 @@ export const routes: Routes = [
   { path: 'bookings', component: DashboardPage },
 
   // Account
-  { path: 'profile', component: ProfilePage },
-  { path: 'login', component: LoginPage },
+  // { path: 'profile', component: ProfilePage },
+  // { path: 'login', component: LoginPage },
 
-  { path: '**', redirectTo: 'hotels' },
+  // { path: '**', redirectTo: 'hotels' },
 ];
