@@ -1,0 +1,120 @@
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <div class="eyebrow">Hotel Booking Platform</div>
+      <h1>Find your next stay</h1>
+      <p>
+        Search by city, pick dates, and book in minutes. A clean UI on top of a real Django REST API.
+      </p>
+    </div>
+
+    <form class="search-bar panel" (ngSubmit)="searchRooms()">
+      <label class="label">
+        Location
+        <input class="field" name="city" [(ngModel)]="search.city" placeholder="Where are you going?" />
+      </label>
+
+      <label class="label">
+        Check-in
+        <input class="field" name="checkIn" [(ngModel)]="search.check_in" type="date" />
+      </label>
+
+      <label class="label">
+        Check-out
+        <input class="field" name="checkOut" [(ngModel)]="search.check_out" type="date" />
+      </label>
+
+      <label class="label">
+        Guests
+        <input class="field" name="guests" [(ngModel)]="search.guests" type="number" min="1" />
+      </label>
+
+      <button class="primary-btn" type="submit">
+        {{ searching() ? 'Searching...' : 'Search' }}
+      </button>
+    </form>
+  </div>
+</section>
+
+@if (error()) {
+<section class="status status-error">{{ error() }}</section>
+}
+
+@if (availability(); as results) {
+<section class="panel results">
+  <div class="section-head">
+    <div>
+      <div class="eyebrow">Search results</div>
+      <h2>{{ results.matches }} room(s) found in {{ results.filters.city || 'all cities' }}</h2>
+    </div> <a class="secondary-btn link-btn" routerLink="/bookings">Manage bookings</a>
+  </div>
+
+  <div class="room-grid">
+    @for (room of results.rooms; track room.id) {
+    <article class="hover-card room-card">
+      <div class="room-image" [style.background-image]="'url(' + (room.image_url || '') + ')'"></div>
+      <div class="room-body">
+        <div class="row">
+          <div>
+            <div class="muted">{{ room.hotel.name }} · {{ room.hotel.city }}</div>
+            <h3>{{ room.title }}</h3>
+          </div>
+          <div class="price">
+            <strong>${{ room.price_per_night }}</strong>
+            <span>per night</span>
+          </div>
+        </div>
+        <p class="muted">{{ room.description }}</p>
+        <div class="tag-row">
+          <span>{{ room.capacity }} guests</span>
+          <span>{{ room.available_units }} left</span>
+        </div>
+      </div>
+    </article>
+    }
+  </div>
+</section>
+}
+
+<section class="panel featured">
+  <div class="section-head">
+    <div>
+      <div class="eyebrow">Featured</div>
+      <h2>Popular hotels</h2>
+    </div>
+    <button class="secondary-btn" type="button" (click)="loadFeaturedHotels()">
+      {{ loadingHotels() ? 'Loading...' : 'Refresh' }}
+    </button>
+  </div>
+
+  <div class="hotel-grid">
+    @for (hotel of hotels(); track hotel.id) {
+    <article class="hover-card hotel-card">
+      <div class="hotel-media" [style.background-image]="'url(' + (hotel.hero_image || '') + ')'"></div>
+      <div class="hotel-body">
+        <div class="row">
+          <div>
+            <h3>{{ hotel.name }}</h3>
+            <div class="muted">{{ hotel.city }}</div>
+          </div>
+          <div class="rating">
+            <strong>{{ hotel.rating }}</strong>
+            <span>/ 5</span>
+          </div>
+        </div>
+
+        <p class="muted clamp-2">{{ hotel.description }}</p>
+
+        <div class="mini-room-grid">
+          @for (room of hotel.rooms; track room.id) {
+          <div class="mini-room">
+            <strong>{{ room.title }}</strong>
+            <span>${{ room.price_per_night }} / night</span>
+          </div>
+          }
+        </div>
+      </div>
+    </article>
+    }
+  </div>
+</section>
