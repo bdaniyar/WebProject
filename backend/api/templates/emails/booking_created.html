@@ -1,0 +1,43 @@
+{% extends "emails/_base.html" %}
+
+{% block header_title %}Booking confirmed{% endblock %}
+
+{% block content %}
+<p style="margin:0 0 10px;font-size:15px;">Hi <strong>{{ booking.guest.get_full_name|default:booking.guest.username }}</strong>,</p>
+<p style="margin:0 0 14px;color:#334155;line-height:1.7;">
+  Your booking is confirmed. Here are the details:
+</p>
+
+<div style="background:#f8fafc;border:1px solid rgba(15,23,42,0.08);border-radius:14px;padding:14px;margin:14px 0;">
+  <table role="presentation" style="width:100%;border-collapse:collapse;font-size:14px;">
+    <tr>
+      <td style="padding:6px 0;color:#64748b;width:130px;">Hotel</td>
+      <td style="padding:6px 0;font-weight:800;color:#0f172a;">{{ booking.room.hotel.name }}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 0;color:#64748b;">Room</td>
+      <td style="padding:6px 0;color:#0f172a;">{{ booking.room.title }}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 0;color:#64748b;">Dates</td>
+      <td style="padding:6px 0;color:#0f172a;">{{ booking.check_in }} → {{ booking.check_out }}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 0;color:#64748b;">Guests</td>
+      <td style="padding:6px 0;color:#0f172a;">{{ booking.guests }}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 0;color:#64748b;">Total</td>
+      <td style="padding:6px 0;font-weight:900;color:#0f172a;">{{ booking.total_price }}</td>
+    </tr>
+  </table>
+</div>
+
+<div style="display:inline-block;background:#ecfeff;border:1px solid rgba(6,182,212,0.25);color:#155e75;padding:10px 12px;border-radius:12px;font-size:13px;line-height:1.5;">
+  Tip: You can manage or cancel reservations from your dashboard.
+</div>
+
+<p style="margin:14px 0 0;color:#64748b;font-size:13px;line-height:1.7;">
+  Thanks for choosing us. We wish you a great stay.
+</p>
+{% endblock %}

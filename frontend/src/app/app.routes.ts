@@ -2,10 +2,12 @@ import { Routes } from '@angular/router';
 
 import { DashboardPage } from './pages/dashboard/dashboard';
 import { DiscoverPage } from './pages/discover/discover';
+import { ForgotPasswordPage } from './pages/forgot-password/forgot-password';
 import { HotelDetailPage } from './pages/hotel-detail/hotel-detail';
 import { HotelsPage } from './pages/hotels/hotels';
 import { LoginPage } from './pages/login/login';
 import { ProfilePage } from './pages/profile/profile';
+import { ResetPasswordPage } from './pages/reset-password/reset-password';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'hotels' },
@@ -21,6 +23,8 @@ export const routes: Routes = [
   // Account
   { path: 'profile', component: ProfilePage },
   { path: 'login', component: LoginPage },
+  { path: 'forgot-password', component: ForgotPasswordPage },
+  { path: 'reset-password', component: ResetPasswordPage },
 
   { path: '**', redirectTo: 'hotels' },
 ];

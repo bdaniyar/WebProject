@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from api.email_service import send_booking_cancelled_email, send_booking_created_email
 from api.models import Booking, Room
 from api.serializers import BookingSerializer, DashboardSerializer, RoomSerializer
 
@@ -49,6 +50,10 @@ class BookingListCreateAPIView(APIView):
     def post(self, request):
         serializer = BookingSerializer(data=request.data, context={"request": request})
         booking = _booking_creation_race_safe(serializer)
+
+        if booking.guest.email:
+            send_booking_created_email(booking=booking)
+
         return Response(
             BookingSerializer(booking, context={"request": request}).data,
             status=status.HTTP_201_CREATED,
@@ -101,6 +106,10 @@ class BookingDetailAPIView(APIView):
             )
         booking.status = Booking.Status.CANCELLED
         booking.save(update_fields=["status", "updated_at"])
+
+        if booking.guest.email:
+            send_booking_cancelled_email(booking=booking)
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

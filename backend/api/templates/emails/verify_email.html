@@ -1,0 +1,18 @@
+{% extends "emails/_base.html" %}
+
+{% block header_title %}Confirm your email{% endblock %}
+
+{% block content %}
+<p style="margin:0 0 10px;font-size:15px;">Hi <strong>{{ username }}</strong>,</p>
+<p style="margin:0 0 14px;color:#334155;line-height:1.7;">
+  Thanks for registering. Please confirm your email to finish setting up your account.
+</p>
+
+<div style="margin:18px 0;">
+  {% include "emails/_button.html" with url=verify_url label="Confirm email" %}
+</div>
+
+<p style="margin:0;color:#64748b;font-size:13px;line-height:1.7;">
+  If you didn't create this account, you can safely ignore this message.
+</p>
+{% endblock %}

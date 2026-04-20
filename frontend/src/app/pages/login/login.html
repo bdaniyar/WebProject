@@ -24,6 +24,8 @@
       <input class="field" name="password" [(ngModel)]="credentials.password" type="password" />
     </label>
 
+    <a routerLink="/forgot-password" class="muted link">Forgot password?</a>
+
     <button class="primary-btn" type="submit">{{ busy() ? 'Signing in...' : 'Login' }}</button>
   </form>
 

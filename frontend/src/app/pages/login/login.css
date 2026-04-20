@@ -1,3 +1,4 @@
+/* filepath: /Users/daniarboranov/Documents/code_materials/webproject/frontend/src/app/pages/login/login.css */
 .auth-grid {
   display: grid;
   grid-template-columns: 1.1fr 0.95fr 0.95fr;
@@ -23,6 +24,11 @@
 .auth-intro p {
   color: var(--text-secondary);
   line-height: 1.7;
+}
+
+.link {
+  text-decoration: underline;
+  justify-self: start;
 }
 
 @media (max-width: 980px) {
