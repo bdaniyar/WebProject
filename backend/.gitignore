@@ -22,3 +22,4 @@ sdist/
 var/
 *.egg-info
 install-requires.txt
+.env
