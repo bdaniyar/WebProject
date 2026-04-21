@@ -153,9 +153,13 @@ export class MapPage implements AfterViewInit {
       const hotelPos = { lat: h.latitude, lng: h.longitude };
       if (user && haversineKm(user, hotelPos) > radius) continue;
 
-      const marker = L.marker([hotelPos.lat, hotelPos.lng]).bindPopup(
-        `<strong>${h.name}</strong><br/>${[h.city, h.country].filter(Boolean).join(', ')}`,
-      );
+      const location = [h.city, h.country].filter(Boolean).join(', ');
+      const marker = L.marker([hotelPos.lat, hotelPos.lng]);
+      marker.bindTooltip(`<strong>${h.name}</strong><br/>${location}`, {
+        sticky: true,
+        direction: 'top',
+        opacity: 0.95,
+      });
       marker.on('click', () => {
         void this.router.navigate(['/hotels', h.id]);
       });
