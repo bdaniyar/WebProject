@@ -22,6 +22,15 @@ def user_me_view(request):
         )
 
     # PUT
+    new_username = request.data.get("username")
+
+    if new_username and new_username != user.username:
+        from django.contrib.auth.models import User
+
+        if User.objects.filter(username=new_username).exclude(pk=user.pk).exists():
+            return Response({"detail": "Username is already taken."}, status=status.HTTP_400_BAD_REQUEST)
+        user.username = new_username
+
     user.first_name = request.data.get("first_name", user.first_name)
     user.last_name = request.data.get("last_name", user.last_name)
     user.email = request.data.get("email", user.email)

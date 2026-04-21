@@ -12,6 +12,7 @@ from api.views import (
     dashboard_view,
     login_view,
     logout_view,
+    refresh_view,
     register_view,
     user_me_view,
 )
@@ -26,6 +27,7 @@ urlpatterns = [
     path("auth/register/", register_view, name="register"),
     path("auth/login/", login_view, name="login"),
     path("auth/logout/", logout_view, name="logout"),
+    path("auth/refresh/", refresh_view, name="refresh"),
     path("auth/verify-email/", verify_email_view, name="verify-email"),
     path("auth/password-reset/", password_reset_request_view, name="password-reset"),
     path("auth/password-reset/confirm/", password_reset_confirm_view, name="password-reset-confirm"),

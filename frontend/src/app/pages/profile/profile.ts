@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, computed, inject, PLATFORM_ID, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -18,6 +18,7 @@ export class ProfilePage {
     private readonly auth = inject(AuthService);
     private readonly api = inject(UserApiService);
     private readonly router = inject(Router);
+    private readonly platformId = inject(PLATFORM_ID);
 
     readonly busy = signal(false);
     readonly error = signal('');
@@ -27,6 +28,7 @@ export class ProfilePage {
     readonly isAuthenticated = this.auth.isAuthenticated;
 
     profileForm = {
+        username: '',
         first_name: '',
         last_name: '',
         email: '',
@@ -45,6 +47,10 @@ export class ProfilePage {
     });
 
     ngOnInit() {
+        if (!isPlatformBrowser(this.platformId)) {
+            return;
+        }
+
         if (!this.auth.isAuthenticated()) {
             void this.router.navigate(['/login']);
             return;
@@ -60,8 +66,9 @@ export class ProfilePage {
 
         this.api.getMe().subscribe({
             next: (me) => {
-                this.auth.user.set(me);
+                this.auth.updateUser(me);
                 this.profileForm = {
+                    username: me.username,
                     first_name: me.first_name,
                     last_name: me.last_name,
                     email: me.email,
@@ -79,7 +86,7 @@ export class ProfilePage {
 
         this.api.updateMe(this.profileForm).subscribe({
             next: (me) => {
-                this.auth.user.set(me);
+                this.auth.updateUser(me);
                 this.success.set('Profile updated.');
             },
             error: (error) => this.error.set(readApiError(error)),

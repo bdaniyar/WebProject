@@ -82,3 +82,24 @@ def logout_view(request):
         )
 
     return Response({"detail": "Logged out successfully."}, status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def refresh_view(request):
+    refresh_token = request.data.get("refresh")
+    if not refresh_token:
+        return Response(
+            {"detail": "Refresh token is required."}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        token = RefreshToken(refresh_token)
+        access = str(token.access_token)
+    except Exception:
+        return Response(
+            {"detail": "Refresh token is invalid or expired."},
+            status=status.HTTP_401_UNAUTHORIZED,
+        )
+
+    return Response({"access": access}, status=status.HTTP_200_OK)
