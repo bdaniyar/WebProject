@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ subject|default:"Hotel Booking" }}</title>
+  </head>
+
+  <body style="margin:0;padding:0;background:#f6f7fb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:#0f172a;">
+    <div style="max-width:640px;margin:0 auto;padding:28px 16px;">
+
+      <!-- Header (table layout for email clients) -->
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0"
+             style="width:100%;border-collapse:separate;border-spacing:0;background:linear-gradient(135deg,#2563eb 0%,#7c3aed 100%);border-radius:18px 18px 0 0;">
+        <tr>
+          <td style="padding:22px 22px 18px;">
+            <table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+              <tr>
+                <td valign="middle" style="padding-right:12px;">
+                  <div style="width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,0.18);display:inline-flex;align-items:center;justify-content:center;font-weight:800;color:#fff;text-align:center;line-height:40px;">
+                    HB
+                  </div>
+                </td>
+                <td valign="middle">
+                  <div style="color:rgba(255,255,255,0.9);font-size:12px;letter-spacing:0.12em;text-transform:uppercase;">
+                    Hotel Booking
+                  </div>
+                  <div style="color:#fff;font-size:18px;font-weight:800;line-height:1.2;">
+                    {% block header_title %}Notification{% endblock %}
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Card -->
+      <div style="background:#ffffff;border:1px solid rgba(15,23,42,0.10);border-top:0;border-radius:0 0 18px 18px;box-shadow:0 10px 30px rgba(2,6,23,0.06);padding:22px;">
+        {% block content %}{% endblock %}
+
+        <hr style="border:none;border-top:1px solid rgba(15,23,42,0.08);margin:18px 0;" />
+
+        <div style="color:#64748b;font-size:12px;line-height:1.6;">
+          <div>If you have questions, reply to this email.</div>
+          <div style="margin-top:6px;">© {{ year|default:2026 }} Hotel Booking</div>
+        </div>
+      </div>
+
+      <div style="text-align:center;color:#94a3b8;font-size:11px;margin-top:14px;">
+        This message was sent automatically.
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+Hotel Booking — Confirm your email
+
+Hi {{ username }},
+
+Thanks for registering.
+
+Confirm your email:
+{{ verify_url }}
+
+If you didn't create this account, you can ignore this message.
