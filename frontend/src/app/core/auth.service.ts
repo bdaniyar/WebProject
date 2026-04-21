@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, map, Observable, of, tap } from 'rxjs';
+import { catchError, finalize, map, Observable, of, tap, throwError } from 'rxjs';
 
 import { API_BASE_URL } from './api.config';
 import { AuthResponse, LoginPayload, RegisterPayload, UserProfile } from './models';
@@ -14,6 +14,7 @@ const USER_KEY = 'hotel-booking.user';
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private refreshInFlight: Observable<string> | null = null;
 
   readonly accessToken = signal<string | null>(this.readStorage(ACCESS_KEY));
   readonly refreshToken = signal<string | null>(this.readStorage(REFRESH_KEY));
@@ -57,6 +58,41 @@ export class AuthService {
     this.removeStorage(ACCESS_KEY);
     this.removeStorage(REFRESH_KEY);
     this.removeStorage(USER_KEY);
+  }
+
+  updateUser(user: UserProfile | null) {
+    this.user.set(user);
+    if (user) {
+      this.writeStorage(USER_KEY, JSON.stringify(user));
+    } else {
+      this.removeStorage(USER_KEY);
+    }
+  }
+
+  refreshAccessToken(): Observable<string> {
+    const refresh = this.refreshToken();
+    if (!refresh) {
+      return throwError(() => new Error('Missing refresh token.'));
+    }
+
+    if (this.refreshInFlight) {
+      return this.refreshInFlight;
+    }
+
+    this.refreshInFlight = this.http
+      .post<{ access: string }>(`${API_BASE_URL}/auth/refresh/`, { refresh })
+      .pipe(
+        map((r) => r.access),
+        tap((access) => {
+          this.accessToken.set(access);
+          this.writeStorage(ACCESS_KEY, access);
+        }),
+        finalize(() => {
+          this.refreshInFlight = null;
+        }),
+      );
+
+    return this.refreshInFlight;
   }
 
   private persistSession(response: AuthResponse) {

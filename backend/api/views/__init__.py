@@ -1,4 +1,4 @@
-from api.views.auth import login_view, logout_view, register_view
+from api.views.auth import login_view, logout_view, refresh_view, register_view
 from api.views.bookings import (
     BookingDetailAPIView,
     BookingListCreateAPIView,
@@ -24,6 +24,7 @@ __all__ = [
     "dashboard_view",
     "login_view",
     "logout_view",
+    "refresh_view",
     "register_view",
     "user_me_view",
     "change_password_view",
