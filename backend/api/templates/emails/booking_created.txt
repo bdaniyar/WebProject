@@ -1,0 +1,16 @@
+Hotel Booking — Booking confirmed
+
+Hi {{ booking.guest.get_full_name|default:booking.guest.username }},
+
+Your booking is confirmed. Details:
+
+- Hotel: {{ booking.room.hotel.name }}
+- Room: {{ booking.room.title }}
+- Dates: {{ booking.check_in }} → {{ booking.check_out }}
+- Guests: {{ booking.guests }}
+- Total: {{ booking.total_price }}
+
+Tip: You can manage or cancel reservations from your dashboard.
+
+Thank you,
+Hotel Booking team

@@ -1,0 +1,11 @@
+Hotel Booking — Booking cancelled
+
+Hi {{ booking.guest.get_full_name|default:booking.guest.username }},
+
+Your booking was cancelled.
+
+Hotel: {{ booking.room.hotel.name }}
+Room: {{ booking.room.title }}
+Dates: {{ booking.check_in }} → {{ booking.check_out }}
+
+If this wasn't you, contact support.

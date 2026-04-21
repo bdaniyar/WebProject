@@ -1,0 +1,31 @@
+{% extends "emails/_base.html" %}
+
+{% block header_title %}Booking cancelled{% endblock %}
+
+{% block content %}
+<p style="margin:0 0 10px;font-size:15px;">Hi <strong>{{ booking.guest.get_full_name|default:booking.guest.username }}</strong>,</p>
+<p style="margin:0 0 14px;color:#334155;line-height:1.7;">
+  Your booking was cancelled. If this wasn't you, please contact support.
+</p>
+
+<div style="background:#fff7ed;border:1px solid rgba(234,88,12,0.20);border-radius:14px;padding:14px;margin:14px 0;">
+  <table role="presentation" style="width:100%;border-collapse:collapse;font-size:14px;">
+    <tr>
+      <td style="padding:6px 0;color:#9a3412;width:130px;">Hotel</td>
+      <td style="padding:6px 0;font-weight:800;color:#7c2d12;">{{ booking.room.hotel.name }}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 0;color:#9a3412;">Room</td>
+      <td style="padding:6px 0;color:#7c2d12;">{{ booking.room.title }}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 0;color:#9a3412;">Dates</td>
+      <td style="padding:6px 0;color:#7c2d12;">{{ booking.check_in }} → {{ booking.check_out }}</td>
+    </tr>
+  </table>
+</div>
+
+<p style="margin:0;color:#64748b;font-size:13px;line-height:1.7;">
+  You can book again anytime from your dashboard.
+</p>
+{% endblock %}

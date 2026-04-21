@@ -11,16 +11,16 @@ class AmenityAdmin(admin.ModelAdmin):
 
 @admin.register(Hotel)
 class HotelAdmin(admin.ModelAdmin):
-    list_display = ('name', 'city', 'rating', 'featured')
-    list_filter = ('city', 'featured')
-    search_fields = ('name', 'city', 'address')
+    list_display = ('name', 'city', 'country', 'rating', 'featured')
+    list_filter = ('country', 'city', 'featured')
+    search_fields = ('name', 'city', 'country', 'address')
 
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
     list_display = ('title', 'hotel', 'capacity', 'price_per_night', 'total_units', 'active')
-    list_filter = ('hotel__city', 'active', 'capacity')
-    search_fields = ('title', 'hotel__name', 'hotel__city')
+    list_filter = ('hotel__country', 'hotel__city', 'active', 'capacity')
+    search_fields = ('title', 'hotel__name', 'hotel__city', 'hotel__country')
     filter_horizontal = ('amenities',)
 
 
