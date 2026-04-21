@@ -37,6 +37,21 @@ export class HotelApiService {
     if (filters.check_out) {
       params = params.set('check_out', filters.check_out);
     }
+    if (typeof filters.min_rating === 'number') {
+      params = params.set('min_rating', String(filters.min_rating));
+    }
+    if (typeof filters.price_min === 'number') {
+      params = params.set('price_min', String(filters.price_min));
+    }
+    if (typeof filters.price_max === 'number') {
+      params = params.set('price_max', String(filters.price_max));
+    }
+    if (filters.amenity_ids?.length) {
+      params = params.set('amenity_ids', filters.amenity_ids.join(','));
+    }
+    if (filters.sort) {
+      params = params.set('sort', filters.sort);
+    }
     return this.http.get<Hotel[]>(`${API_BASE_URL}/hotels/`, { params });
   }
 

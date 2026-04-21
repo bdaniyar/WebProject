@@ -23,6 +23,9 @@
                 <div class="muted">{{ h.address }}</div>
                 <p class="muted">{{ h.description }}</p>
                 <div class="hero-meta">
+                    <button class="secondary-btn" type="button" (click)="toggleFavorite()">
+                        @if (isFavorite()) { <span>♥ Saved</span> } @else { <span>♡ Save</span> }
+                    </button>
                     <div class="rating"><strong>{{ h.rating }}</strong><span>/5</span></div>
                     @if (h.starting_price) {
                     <div class="starting-price">

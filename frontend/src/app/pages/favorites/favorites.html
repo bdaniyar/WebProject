@@ -1,0 +1,48 @@
+<section class="panel favorites-shell">
+  <div class="section-head">
+    <div>
+      <div class="eyebrow">Favorites</div>
+      <h1>Your wishlist</h1>
+      <p class="muted">Save hotels you like to come back later.</p>
+    </div>
+    <button class="secondary-btn" type="button" (click)="refresh()" [disabled]="loading()">
+      {{ loading() ? 'Refreshing...' : 'Refresh' }}
+    </button>
+  </div>
+
+  @if (error()) {
+    <div class="status status-error">{{ error() }}</div>
+  }
+
+  @if (loading() && !items().length) {
+    <p class="muted">Loading favorites...</p>
+  } @else {
+    @if (!items().length) {
+      <div class="empty-state">
+        <h3>No favorites yet</h3>
+        <p class="muted">Browse hotels and tap the heart icon to save them here.</p>
+        <a class="primary-btn link-btn" routerLink="/hotels">Browse hotels</a>
+      </div>
+    } @else {
+      <div class="favorite-list">
+        @for (f of items(); track f.id) {
+          <article class="favorite-card">
+            <div class="copy">
+              <h3 class="name">
+                <a class="link" [routerLink]="['/hotels', f.hotel.id]">{{ f.hotel.name }}</a>
+              </h3>
+              <div class="muted">{{ location(f) }}</div>
+              <div class="rating"><strong>{{ f.hotel.rating }}</strong><span>/5</span></div>
+            </div>
+            <div class="actions">
+              <a class="secondary-btn link-btn" [routerLink]="['/hotels', f.hotel.id]">Open</a>
+              <button class="danger-btn" type="button" (click)="remove(f)">Remove</button>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  }
+
+</section>
+

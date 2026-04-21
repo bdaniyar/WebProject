@@ -34,6 +34,8 @@ export interface Hotel {
   description: string;
   hero_image: string;
   rating: number;
+  latitude?: number | null;
+  longitude?: number | null;
   featured: boolean;
   room_count: number;
   starting_price: number | null;
@@ -90,6 +92,11 @@ export interface SearchFilters {
   check_in: string;
   check_out: string;
   hotel_id?: number;
+  min_rating?: number;
+  price_min?: number;
+  price_max?: number;
+  amenity_ids?: number[];
+  sort?: 'price_asc' | 'price_desc' | 'rating_desc' | '';
 }
 
 export interface HotelSearchFilters {
@@ -99,6 +106,28 @@ export interface HotelSearchFilters {
   check_in?: string;
   check_out?: string;
   featured?: boolean;
+  min_rating?: number;
+  price_min?: number;
+  price_max?: number;
+  amenity_ids?: number[];
+  sort?: 'price_asc' | 'price_desc' | 'rating_desc' | '';
+}
+
+export interface HotelPreview {
+  id: number;
+  name: string;
+  city: string;
+  country: string;
+  rating: number;
+  featured: boolean;
+  latitude: number | null;
+  longitude: number | null;
+}
+
+export interface Favorite {
+  id: number;
+  hotel: HotelPreview;
+  created_at: string;
 }
 
 export interface AvailabilityResponse {
