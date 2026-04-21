@@ -1,5 +1,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, inject, PLATFORM_ID, signal, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { HotelApiService } from '../../core/hotel-api.service';
 import { readApiError } from '../../core/error.util';
@@ -27,6 +28,7 @@ function haversineKm(a: LatLng, b: LatLng) {
 export class MapPage implements AfterViewInit {
   private readonly api = inject(HotelApiService);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly router = inject(Router);
 
   readonly hotels = signal<Hotel[]>([]);
   readonly error = signal('');
@@ -93,6 +95,12 @@ export class MapPage implements AfterViewInit {
     }).addTo(this.map);
 
     this.markersLayer = L.layerGroup().addTo(this.map);
+
+    // If the page/layout finishes after map init, tiles can render partially.
+    // Force Leaflet to recalc size on next tick.
+    setTimeout(() => {
+      this.map?.invalidateSize();
+    }, 0);
   }
 
   private loadHotels() {
@@ -148,6 +156,9 @@ export class MapPage implements AfterViewInit {
       const marker = L.marker([hotelPos.lat, hotelPos.lng]).bindPopup(
         `<strong>${h.name}</strong><br/>${[h.city, h.country].filter(Boolean).join(', ')}`,
       );
+      marker.on('click', () => {
+        void this.router.navigate(['/hotels', h.id]);
+      });
       marker.addTo(this.markersLayer);
       bounds.extend([hotelPos.lat, hotelPos.lng]);
     }
