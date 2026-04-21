@@ -182,3 +182,46 @@ class BookingSerializer(serializers.ModelSerializer):
         instance.total_price = self._calculate_total(instance.room, instance.check_in, instance.check_out)
         instance.save()
         return instance
+
+
+class RegisterSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=150)
+    password = serializers.CharField(write_only=True, min_length=6)
+    first_name = serializers.CharField(max_length=150, required=False, allow_blank=True)
+    last_name = serializers.CharField(max_length=150, required=False, allow_blank=True)
+    email = serializers.EmailField(required=False, allow_blank=True)
+
+    def validate_username(self, value):
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError('Username is already taken.')
+        return value
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+
+class AvailabilityRequestSerializer(serializers.Serializer):
+    city = serializers.CharField(required=False, allow_blank=True)
+    hotel_id = serializers.IntegerField(required=False, min_value=1)
+    guests = serializers.IntegerField(min_value=1)
+    check_in = serializers.DateField()
+    check_out = serializers.DateField()
+
+    def validate(self, attrs):
+        if attrs['check_in'] >= attrs['check_out']:
+            raise serializers.ValidationError('Check-out must be later than check-in.')
+        return attrs
+
+
+class DashboardSerializer(serializers.Serializer):
+    user = serializers.DictField()
+    active_bookings = serializers.IntegerField()
+    total_spent = serializers.FloatField()
+    upcoming_check_in = serializers.DateField(allow_null=True)
+    bookings = serializers.ListField()
+    recommended_rooms = serializers.ListField()
