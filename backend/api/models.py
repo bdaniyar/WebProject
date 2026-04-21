@@ -1,8 +1,8 @@
-from django.db import models
-
 from decimal import Decimal
 
 from django.contrib.auth.models import User
+from django.db import models
+
 
 class RoomQuerySet(models.QuerySet):
     def active(self):
@@ -21,7 +21,7 @@ class RoomQuerySet(models.QuerySet):
 
 RoomManager = models.Manager.from_queryset(RoomQuerySet)
 
-# Create your models here.
+
 class Amenity(models.Model):
     title = models.CharField(max_length=80, unique=True)
     icon = models.CharField(max_length=40, blank=True)
@@ -50,7 +50,7 @@ class Hotel(models.Model):
 
     def __str__(self):
         return f'{self.name} ({self.city})'
-    
+
 
 class Room(models.Model):
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='rooms')
@@ -86,6 +86,7 @@ class Room(models.Model):
             return self.total_units
         return max(self.total_units - self.reserved_units(check_in, check_out, exclude_booking), 0)
 
+
 class Booking(models.Model):
     class Status(models.TextChoices):
         CONFIRMED = 'confirmed', 'Confirmed'
@@ -109,3 +110,17 @@ class Booking(models.Model):
 
     def __str__(self):
         return f'Booking #{self.pk} by {self.guest.username}'
+
+
+class Review(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='hotel_reviews')
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='reviews')
+    rating = models.PositiveSmallIntegerField(default=5)
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ('-created_at',)
+
+    def __str__(self):
+        return f'{self.hotel.name} review by {self.author.username}'
