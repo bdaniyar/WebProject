@@ -1,0 +1,31 @@
+<section class="panel map-shell">
+  <div class="section-head">
+    <div>
+      <div class="eyebrow">Map</div>
+      <h1>Hotels on the map</h1>
+      <p class="muted">Use your location to filter hotels by radius.</p>
+    </div>
+
+    <div class="controls">
+      <label class="label small">
+        Radius (km)
+        <input
+          class="field"
+          type="number"
+          min="1"
+          max="2000"
+          [value]="radiusKm()"
+          (input)="setRadius($any($event.target).valueAsNumber || 1)"
+        />
+      </label>
+      <button class="secondary-btn" type="button" (click)="locateUser()">Use my location</button>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="status status-error">{{ error() }}</div>
+  }
+
+  <div #map class="map"></div>
+</section>
+

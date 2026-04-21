@@ -8,6 +8,11 @@
 
       <nav class="nav">
         <a routerLink="/hotels" routerLinkActive="active">Hotels</a>
+        <a routerLink="/map" routerLinkActive="active">Map</a>
+        <a routerLink="/favorites" routerLinkActive="active" [class.hidden]="!isAuthenticated()">
+          Favorites
+          @if (favoritesCount()) { <span class="badge">{{ favoritesCount() }}</span> }
+        </a>
         <a routerLink="/bookings" routerLinkActive="active">Bookings</a>
         <a routerLink="/profile" routerLinkActive="active" [class.hidden]="!isAuthenticated()">Profile</a>
         <a routerLink="/login" routerLinkActive="active" [class.hidden]="isAuthenticated()">Login / Register</a>

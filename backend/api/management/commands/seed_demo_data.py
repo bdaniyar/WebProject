@@ -32,6 +32,28 @@ class Command(BaseCommand):
             hotel_defaults = {
                 key: value for key, value in hotel_data.items() if key != "rooms"
             }
+
+            coords_by_city = {
+                "London": (51.5072, -0.1276),
+                "Almaty": (43.2389, 76.8897),
+                "Singapore": (1.3521, 103.8198),
+                "Dubai": (25.2048, 55.2708),
+                "Paris": (48.8566, 2.3522),
+                "Tokyo": (35.6762, 139.6503),
+                "New York": (40.7128, -74.0060),
+                "Bali": (-8.3405, 115.0920),
+                "Barcelona": (41.3874, 2.1686),
+                "Seoul": (37.5665, 126.9780),
+                "Sydney": (-33.8688, 151.2093),
+                "Bangkok": (13.7563, 100.5018),
+                "Berlin": (52.5200, 13.4050),
+                "Banff": (51.1784, -115.5708),
+            }
+            city_coords = coords_by_city.get(hotel_data.get("city") or "")
+            if city_coords:
+                hotel_defaults.setdefault("latitude", city_coords[0])
+                hotel_defaults.setdefault("longitude", city_coords[1])
+
             hotel, _ = Hotel.objects.update_or_create(
                 name=hotel_data["name"],
                 defaults=hotel_defaults,

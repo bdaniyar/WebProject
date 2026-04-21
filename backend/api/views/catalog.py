@@ -1,4 +1,7 @@
+from decimal import Decimal, InvalidOperation
+
 from django.db.models import Prefetch
+from django.db.models import Min, Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -7,9 +10,10 @@ from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.models import Hotel, Review, Room
+from api.models import Amenity, Hotel, Review, Room
 from api.serializers import (
     AvailabilityRequestSerializer,
+    AmenitySerializer,
     HotelSerializer,
     ReviewCreateSerializer,
     ReviewSerializer,
@@ -27,6 +31,41 @@ def _parse_optional_positive_int(raw_value, field_name):
     if value < 1:
         raise ValidationError({field_name: "Must be at least 1."})
     return value
+
+
+def _parse_optional_decimal(raw_value, field_name):
+    if raw_value in (None, ""):
+        return None
+    try:
+        value = Decimal(str(raw_value))
+    except (InvalidOperation, TypeError, ValueError) as exc:
+        raise ValidationError({field_name: "Must be a number."}) from exc
+    if value < 0:
+        raise ValidationError({field_name: "Must be >= 0."})
+    return value
+
+
+def _parse_optional_float(raw_value, field_name):
+    if raw_value in (None, ""):
+        return None
+    try:
+        value = float(raw_value)
+    except (TypeError, ValueError) as exc:
+        raise ValidationError({field_name: "Must be a number."}) from exc
+    return value
+
+
+def _parse_int_list(raw_value, field_name):
+    if raw_value in (None, ""):
+        return []
+    try:
+        parts = [p.strip() for p in str(raw_value).split(",") if p.strip()]
+        values = [int(p) for p in parts]
+    except (TypeError, ValueError) as exc:
+        raise ValidationError({field_name: "Must be a comma-separated list of integers."}) from exc
+    if any(v < 1 for v in values):
+        raise ValidationError({field_name: "IDs must be >= 1."})
+    return values
 
 
 def _extract_catalog_filters(request):
@@ -94,12 +133,27 @@ class HotelListCreateAPIView(APIView):
 
     def get(self, request):
         featured_only = request.query_params.get("featured") == "true"
+        sort = (request.query_params.get("sort") or "").strip()
+        min_rating = _parse_optional_float(request.query_params.get("min_rating"), "min_rating")
+        price_min = _parse_optional_decimal(request.query_params.get("price_min"), "price_min")
+        price_max = _parse_optional_decimal(request.query_params.get("price_max"), "price_max")
+        amenity_ids = _parse_int_list(request.query_params.get("amenity_ids"), "amenity_ids")
+
         filters = _extract_catalog_filters(request)
         room_queryset = _catalog_room_queryset(filters)
+
+        if price_min is not None:
+            room_queryset = room_queryset.filter(price_per_night__gte=price_min)
+        if price_max is not None:
+            room_queryset = room_queryset.filter(price_per_night__lte=price_max)
+        if amenity_ids:
+            room_queryset = room_queryset.filter(amenities__id__in=amenity_ids)
 
         queryset = Hotel.objects.all()
         if featured_only:
             queryset = queryset.filter(featured=True)
+        if min_rating is not None:
+            queryset = queryset.filter(rating__gte=min_rating)
         if filters.get("city"):
             queryset = queryset.filter(city__icontains=filters["city"])
         if filters.get("country"):
@@ -119,6 +173,28 @@ class HotelListCreateAPIView(APIView):
         queryset = queryset.prefetch_related(
             Prefetch("rooms", queryset=room_queryset, to_attr="catalog_rooms")
         )
+
+        if sort:
+            room_filter = Q(rooms__active=True)
+            if filters.get("guests"):
+                room_filter &= Q(rooms__capacity__gte=filters["guests"])
+            if price_min is not None:
+                room_filter &= Q(rooms__price_per_night__gte=price_min)
+            if price_max is not None:
+                room_filter &= Q(rooms__price_per_night__lte=price_max)
+            if amenity_ids:
+                room_filter &= Q(rooms__amenities__id__in=amenity_ids)
+
+            if sort == "price_asc":
+                queryset = queryset.annotate(_min_price=Min("rooms__price_per_night", filter=room_filter)).order_by(
+                    "_min_price", "-featured", "city", "name"
+                )
+            elif sort == "price_desc":
+                queryset = queryset.annotate(_min_price=Min("rooms__price_per_night", filter=room_filter)).order_by(
+                    "-_min_price", "-featured", "city", "name"
+                )
+            elif sort == "rating_desc":
+                queryset = queryset.order_by("-rating", "-featured", "city", "name")
 
         serializer = HotelSerializer(
             queryset,
@@ -186,6 +262,14 @@ class RoomListAPIView(APIView):
             context={"request": request, "availability": _availability_context(filters)},
         )
         return Response(serializer.data)
+
+
+class AmenityListAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        queryset = Amenity.objects.all()
+        return Response(AmenitySerializer(queryset, many=True, context={"request": request}).data)
 
 
 class ReviewListCreateAPIView(APIView):

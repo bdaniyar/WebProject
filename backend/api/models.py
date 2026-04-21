@@ -74,6 +74,8 @@ class Hotel(models.Model):
     description = models.TextField()
     hero_image = models.URLField(blank=True)
     rating = models.FloatField(default=4.5)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
     featured = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -180,3 +182,18 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.hotel.name} review by {self.author.username}"
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="favorites")
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name="favorited_by")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=("user", "hotel"), name="unique_user_hotel_favorite")
+        ]
+        ordering = ("-created_at",)
+
+    def __str__(self):
+        return f"Favorite({self.user.username} -> {self.hotel.name})"

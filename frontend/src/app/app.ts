@@ -1,7 +1,8 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { AuthService } from './core/auth.service';
+import { FavoritesService } from './core/favorites.service';
 
 @Component({
   selector: 'app-root',
@@ -9,11 +10,13 @@ import { AuthService } from './core/auth.service';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
+export class App implements OnInit {
   private readonly auth = inject(AuthService);
+  private readonly favorites = inject(FavoritesService);
 
   protected readonly user = this.auth.user;
   protected readonly isAuthenticated = this.auth.isAuthenticated;
+  protected readonly favoritesCount = this.favorites.count;
   protected readonly displayName = computed(() => {
     const currentUser = this.user();
     if (!currentUser) {
@@ -26,5 +29,9 @@ export class App {
 
   protected logout() {
     this.auth.logout().subscribe();
+  }
+
+  ngOnInit() {
+    void this.favorites.refresh().subscribe();
   }
 }

@@ -80,6 +80,20 @@
   border-color: rgba(11, 94, 215, 0.18);
 }
 
+.badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  padding: 0 0.35rem;
+  margin-left: 0.35rem;
+  border-radius: 999px;
+  background: rgba(11, 94, 215, 0.16);
+  color: var(--primary-700, var(--primary-600));
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
 .user-chip {
   background: rgba(15, 23, 42, 0.04);
   border: 1px solid rgba(15, 23, 42, 0.08);

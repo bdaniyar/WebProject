@@ -9,33 +9,93 @@
         </div>
 
         <form class="search-form" (ngSubmit)="loadHotels()">
-            <label class="label">
-                City
-                <input class="field" name="city" [(ngModel)]="search.city" placeholder="Almaty" />
-            </label>
+            <div class="primary-search">
+                <label class="label">
+                    City
+                    <input class="field" name="city" [(ngModel)]="search.city" placeholder="Almaty" />
+                </label>
 
-            <label class="label">
-                Check-in
-                <input class="field" name="check_in" [(ngModel)]="search.check_in" type="date" />
-            </label>
+                <label class="label">
+                    Country
+                    <input class="field" name="country" [(ngModel)]="search.country" placeholder="Kazakhstan" />
+                </label>
 
-            <label class="label">
-                Check-out
-                <input class="field" name="check_out" [(ngModel)]="search.check_out" type="date" />
-            </label>
+                <label class="label">
+                    Check-in
+                    <input class="field" name="check_in" [(ngModel)]="search.check_in" type="date" />
+                </label>
 
-            <label class="label">
-                Guests
-                <input class="field" name="guests" [(ngModel)]="search.guests" type="number" min="1" />
-            </label>
+                <label class="label">
+                    Check-out
+                    <input class="field" name="check_out" [(ngModel)]="search.check_out" type="date" />
+                </label>
 
-            <div class="search-actions">
-                <button class="primary-btn" type="submit" [disabled]="loading()">
-                    {{ loading() ? 'Searching...' : 'Search hotels' }}
-                </button>
-                <button class="secondary-btn" type="button" (click)="resetSearch()" [disabled]="loading()">
-                    Reset
-                </button>
+                <label class="label">
+                    Guests
+                    <input class="field" name="guests" [(ngModel)]="search.guests" type="number" min="1" />
+                </label>
+
+                <div class="search-actions">
+                    <button class="primary-btn" type="submit" [disabled]="loading()">
+                        {{ loading() ? 'Searching...' : 'Search hotels' }}
+                    </button>
+                    <button class="secondary-btn" type="button" (click)="resetSearch()" [disabled]="loading()">
+                        Reset
+                    </button>
+                </div>
+            </div>
+
+            <div class="refiners">
+                <details class="refiner">
+                    <summary>Sort</summary>
+                    <div class="refiner-body">
+                        <label class="label">
+                            Sort by
+                            <select class="field" name="sort" [(ngModel)]="search.sort">
+                                <option value="">Default</option>
+                                <option value="price_asc">Cheapest</option>
+                                <option value="price_desc">Most expensive</option>
+                                <option value="rating_desc">Highest rating</option>
+                            </select>
+                        </label>
+                    </div>
+                </details>
+
+                <details class="refiner">
+                    <summary>Filter</summary>
+                    <div class="refiner-body filter-grid">
+                        <label class="label">
+                            Min rating
+                            <input class="field" name="min_rating" [(ngModel)]="search.min_rating" type="number" min="0"
+                                max="5" step="0.1" />
+                        </label>
+
+                        <label class="label">
+                            Price min
+                            <input class="field" name="price_min" [(ngModel)]="search.price_min" type="number" min="0" />
+                        </label>
+
+                        <label class="label">
+                            Price max
+                            <input class="field" name="price_max" [(ngModel)]="search.price_max" type="number" min="0" />
+                        </label>
+
+                        @if (amenities().length) {
+                        <div class="amenities-filter">
+                            <div class="muted small">Amenities</div>
+                            <div class="amenities-grid">
+                                @for (a of amenities(); track a.id) {
+                                <label class="amenity-check">
+                                    <input type="checkbox" [checked]="(search.amenity_ids || []).includes(a.id)"
+                                        (change)="toggleAmenity(a.id)" />
+                                    <span>{{ a.title }}</span>
+                                </label>
+                                }
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </details>
             </div>
         </form>
     </section>
@@ -80,6 +140,10 @@
                         </div>
 
                         <div class="right">
+                            <button class="fav-btn" type="button" (click)="toggleFavorite(hotel)"
+                                [attr.aria-pressed]="isFavorite(hotel)" [title]="isFavorite(hotel) ? 'Remove from favorites' : 'Add to favorites'">
+                                @if (isFavorite(hotel)) { <span>♥</span> } @else { <span>♡</span> }
+                            </button>
                             <div class="rating"><strong>{{ hotel.rating }}</strong><span>/5</span></div>
                             @if (hotel.starting_price) {
                             <div class="price">

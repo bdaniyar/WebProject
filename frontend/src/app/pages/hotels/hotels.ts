@@ -4,9 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 
+import { AmenitiesApiService } from '../../core/amenities-api.service';
+import { FavoritesService } from '../../core/favorites.service';
 import { HotelApiService } from '../../core/hotel-api.service';
 import { readApiError } from '../../core/error.util';
-import { Hotel, SearchFilters } from '../../core/models';
+import { Amenity, Hotel, SearchFilters } from '../../core/models';
 
 function addDays(offset: number): string {
   const date = new Date();
@@ -22,15 +24,27 @@ function addDays(offset: number): string {
 })
 export class HotelsPage implements OnInit {
   private readonly api = inject(HotelApiService);
+  private readonly favorites = inject(FavoritesService);
+  private readonly amenitiesApi = inject(AmenitiesApiService);
 
   readonly hotels = signal<Hotel[]>([]);
   readonly loading = signal(false);
   readonly error = signal('');
+  readonly amenities = signal<Amenity[]>([]);
 
   search: SearchFilters = this.createDefaultSearch();
 
   ngOnInit() {
     this.loadHotels();
+    void this.favorites.refresh().subscribe();
+    this.loadAmenities();
+  }
+
+  loadAmenities() {
+    this.amenitiesApi.list().subscribe({
+      next: (items) => this.amenities.set(items),
+      error: () => this.amenities.set([]),
+    });
   }
 
   loadHotels() {
@@ -72,6 +86,24 @@ export class HotelsPage implements OnInit {
     return [hotel.city, hotel.country].filter(Boolean).join(', ');
   }
 
+  isFavorite(hotel: Hotel) {
+    return this.favorites.isFavorite(hotel.id);
+  }
+
+  toggleFavorite(hotel: Hotel) {
+    void this.favorites.toggle(hotel.id).subscribe();
+  }
+
+  toggleAmenity(amenityId: number) {
+    const current = new Set(this.search.amenity_ids || []);
+    if (current.has(amenityId)) {
+      current.delete(amenityId);
+    } else {
+      current.add(amenityId);
+    }
+    this.search = { ...this.search, amenity_ids: Array.from(current) };
+  }
+
   private createDefaultSearch(): SearchFilters {
     return {
       city: '',
@@ -79,6 +111,11 @@ export class HotelsPage implements OnInit {
       guests: 2,
       check_in: addDays(7),
       check_out: addDays(9),
+      min_rating: 0,
+      price_min: undefined,
+      price_max: undefined,
+      amenity_ids: [],
+      sort: '',
     };
   }
 }

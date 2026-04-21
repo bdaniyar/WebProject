@@ -5,7 +5,7 @@ from django.db.models import Min
 from django.utils import timezone
 from rest_framework import serializers
 
-from .models import Amenity, Booking, Hotel, Review, Room
+from .models import Amenity, Booking, Favorite, Hotel, Review, Room
 
 
 MAX_STAY_NIGHTS = 30
@@ -21,7 +21,7 @@ class AmenitySerializer(serializers.ModelSerializer):
 class HotelPreviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hotel
-        fields = ("id", "name", "city", "country", "rating", "featured")
+        fields = ("id", "name", "city", "country", "rating", "featured", "latitude", "longitude")
 
 
 class RoomPreviewSerializer(serializers.ModelSerializer):
@@ -66,6 +66,8 @@ class HotelSerializer(serializers.ModelSerializer):
             "description",
             "hero_image",
             "rating",
+            "latitude",
+            "longitude",
             "featured",
             "room_count",
             "starting_price",
@@ -173,6 +175,20 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
             )
 
         return attrs
+
+
+class FavoriteSerializer(serializers.ModelSerializer):
+    hotel = HotelPreviewSerializer(read_only=True)
+    hotel_id = serializers.PrimaryKeyRelatedField(
+        queryset=Hotel.objects.all(),
+        source="hotel",
+        write_only=True,
+    )
+
+    class Meta:
+        model = Favorite
+        fields = ("id", "hotel", "hotel_id", "created_at")
+        read_only_fields = ("id", "hotel", "created_at")
 
 
 class BookingSerializer(serializers.ModelSerializer):

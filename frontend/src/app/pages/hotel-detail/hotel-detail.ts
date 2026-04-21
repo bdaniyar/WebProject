@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../core/auth.service';
+import { FavoritesService } from '../../core/favorites.service';
 import { readApiError } from '../../core/error.util';
 import { HotelApiService } from '../../core/hotel-api.service';
 import { BookingPayload, Hotel, Room } from '../../core/models';
@@ -20,6 +21,7 @@ export class HotelDetailPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
+  private readonly favorites = inject(FavoritesService);
   private readonly reviewsApi = inject(ReviewsApiService);
 
   readonly hotel = signal<Hotel | null>(null);
@@ -64,6 +66,7 @@ export class HotelDetailPage implements OnInit {
     this.loadHotel(id);
     this.loadRooms(id);
     this.loadReviews(id);
+    void this.favorites.refresh().subscribe();
   }
 
   loadHotel(id: number) {
@@ -171,6 +174,17 @@ export class HotelDetailPage implements OnInit {
 
   hotelLocation(hotel: Hotel) {
     return [hotel.city, hotel.country].filter(Boolean).join(', ');
+  }
+
+  isFavorite() {
+    const h = this.hotel();
+    return h ? this.favorites.isFavorite(h.id) : false;
+  }
+
+  toggleFavorite() {
+    const h = this.hotel();
+    if (!h) return;
+    void this.favorites.toggle(h.id).subscribe();
   }
 
   private syncBookingFormFromQuery() {

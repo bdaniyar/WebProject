@@ -5,12 +5,14 @@ from api.views.bookings import (
     dashboard_view,
 )
 from api.views.catalog import (
+    AmenityListAPIView,
     HotelDetailAPIView,
     HotelListCreateAPIView,
     ReviewListCreateAPIView,
     RoomListAPIView,
     availability_view,
 )
+from api.views.favorites import FavoriteDeleteAPIView, FavoriteListCreateAPIView
 from api.views.user import change_password_view, user_me_view
 
 __all__ = [
@@ -18,8 +20,11 @@ __all__ = [
     "BookingListCreateAPIView",
     "HotelDetailAPIView",
     "HotelListCreateAPIView",
+    "AmenityListAPIView",
     "ReviewListCreateAPIView",
     "RoomListAPIView",
+    "FavoriteListCreateAPIView",
+    "FavoriteDeleteAPIView",
     "availability_view",
     "dashboard_view",
     "login_view",
