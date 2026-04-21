@@ -1,0 +1,84 @@
+@if (!isAuthenticated()) {
+<section class="panel profile-shell">
+    <div class="eyebrow">Profile</div>
+    <h1>Please sign in</h1>
+    <p class="muted">You need an account to view and edit your profile.</p>
+</section>
+} @else {
+<section class="panel profile-shell">
+    <div class="section-head">
+        <div>
+            <div class="eyebrow">Profile</div>
+            <h1>{{ displayName() }}</h1>
+            <p class="muted">Update your personal information and password.</p>
+        </div>
+        <button class="secondary-btn" type="button" (click)="loadProfile()" [disabled]="busy()">
+            {{ busy() ? 'Refreshing...' : 'Refresh' }}
+        </button>
+    </div>
+
+    @if (error()) {
+    <div class="status status-error">{{ error() }}</div>
+    }
+    @if (success()) {
+    <div class="status status-success">{{ success() }}</div>
+    }
+
+    <div class="stack">
+        <form class="card" (ngSubmit)="saveProfile()">
+            <div>
+                <h2>Personal details</h2>
+                <p class="muted small">Keep your name and email up to date for bookings and notifications.</p>
+            </div>
+
+            <div class="form-grid">
+                <label class="label">
+                    First name
+                    <input class="field" name="first_name" [(ngModel)]="profileForm.first_name" autocomplete="given-name" />
+                </label>
+
+                <label class="label">
+                    Last name
+                    <input class="field" name="last_name" [(ngModel)]="profileForm.last_name" autocomplete="family-name" />
+                </label>
+            </div>
+
+            <label class="label">
+                Email
+                <input class="field" name="email" [(ngModel)]="profileForm.email" type="email" autocomplete="email" />
+            </label>
+
+            <div class="actions">
+                <button class="primary-btn" type="submit" [disabled]="busy()">
+                    {{ busy() ? 'Saving...' : 'Save changes' }}
+                </button>
+            </div>
+        </form>
+
+        <form class="card" (ngSubmit)="changePassword()">
+            <div>
+                <h2>Change password</h2>
+                <p class="muted small">Choose a new password for your account.</p>
+            </div>
+
+            <div class="form-grid">
+                <label class="label">
+                    Current password
+                    <input class="field" name="old_password" [(ngModel)]="passwordForm.old_password" type="password" autocomplete="current-password" />
+                </label>
+
+                <label class="label">
+                    New password
+                    <input class="field" name="new_password" [(ngModel)]="passwordForm.new_password" type="password" autocomplete="new-password" />
+                </label>
+            </div>
+
+            <div class="actions">
+                <button class="primary-btn" type="submit" [disabled]="busy()">
+                    {{ busy() ? 'Updating...' : 'Update password' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+}
