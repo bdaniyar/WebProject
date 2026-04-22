@@ -158,13 +158,13 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
         if not request or not request.user or not request.user.is_authenticated:
             raise serializers.ValidationError("Authentication required.")
 
-        today = timezone.localdate()
+        #today = timezone.localdate()
         hotel = attrs.get("hotel")
         is_eligible = (
             Booking.objects.filter(
                 guest=request.user,
                 room__hotel=hotel,
-                check_out__lt=today,
+                #check_out__lt=today,
             )
             .exclude(status=Booking.Status.CANCELLED)
             .exists()
